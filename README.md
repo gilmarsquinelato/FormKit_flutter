@@ -1,7 +1,6 @@
 # FormKit
 
-FormKit is a library with the objective to
-reduce the form creation boilerplate.
+Flutter forms made easy.
 
 ---
 ## **🚧 WARNING**
