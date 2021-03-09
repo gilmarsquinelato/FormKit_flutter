@@ -56,16 +56,6 @@ This library is not stable yet!
 - [x] Retrieve form values
 - [x] onSubmit callback
 - [x] FormKitSubmitBuilder: [code](./packages/formkit/lib/src/widgets/formkit_submit_builder.dart)
-```dart
-FormKitSubmitBuilder(
-  builder: (context, submit) => {
-    return ElevatedButton(
-      child: Text('Save'),
-      onPressed: submit,
-    );
-  }
-)
-```
 - [ ] Jump to next field on press enter or tab
 - [x] FormKitShowBuilder: [code](./packages/formkit/lib/src/widgets/formkit_show_builder.dart)
 
