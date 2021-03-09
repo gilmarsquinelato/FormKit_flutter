@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
 import 'package:flutter/foundation.dart';
@@ -26,16 +27,14 @@ import 'package:rxdart/rxdart.dart';
 /// ```
 class FormKitField<T> extends StatefulWidget {
   const FormKitField({
-    Key key,
-    @required this.name,
-    @required this.builder,
-    @required this.onSetValue,
+    Key? key,
+    required this.name,
+    required this.builder,
+    required this.onSetValue,
     this.validator,
     this.validatorInterval,
     this.validatorTimerMode,
-  })  : assert(builder != null),
-        assert(onSetValue != null),
-        super(key: key);
+  }) : super(key: key);
 
   /// {@template formkit.fields.formKitField.name}
   /// Field name so it can be used in [FormKit] widget
@@ -43,23 +42,23 @@ class FormKitField<T> extends StatefulWidget {
   final String name;
 
   /// Builder to create the field widget
-  final FormKitFieldBuilder builder;
+  final FormKitFieldBuilder<T> builder;
 
   /// When a new value is set by the parent [FormKit]
-  final ValueChanged<T> onSetValue;
+  final ValueChanged<T?> onSetValue;
 
   /// {@template formkit.fields.formKitField.validator}
   /// Validator function.
   ///
   /// To define multiple validators use [FormKitValidatorComposer]
   /// {@endtemplate}
-  final FormKitValidator validator;
+  final FormKitValidator<T>? validator;
 
   /// {@template formkit.fields.formKitField.validatorInterval}
   /// The interval to apply in the timer function,
   /// the default value is [const Duration(milliseconds: 250)].
   /// {@endtemplate}
-  final Duration validatorInterval;
+  final Duration? validatorInterval;
 
   /// {@template formkit.fields.formKitField.validatorTimerMode}
   /// Timer function to apply into the validation pipeline.
@@ -67,7 +66,7 @@ class FormKitField<T> extends StatefulWidget {
   /// This mode will be considered when the field value changes
   /// and when [FormKit] calls [FormKitFieldState<T>.setValue].
   /// {@endtemplate}
-  final ValidatorTimerMode validatorTimerMode;
+  final ValidatorTimerMode? validatorTimerMode;
 
   @override
   FormKitFieldState<T> createState() => FormKitFieldState<T>();
@@ -76,9 +75,9 @@ class FormKitField<T> extends StatefulWidget {
 class FormKitFieldState<T> extends State<FormKitField<T>> {
   String get name => widget.name;
 
-  BehaviorSubject<T> _validator;
-  BehaviorSubject<ValidationState> _validatorResult;
-  StreamSubscription<T> _validationSubscription;
+  BehaviorSubject<T?>? _validator;
+  BehaviorSubject<ValidationState>? _validatorResult;
+  StreamSubscription<T?>? _validationSubscription;
 
   Duration get _effectiveTimerInterval =>
       widget.validatorInterval ??
@@ -104,12 +103,12 @@ class FormKitFieldState<T> extends State<FormKitField<T>> {
 
   @override
   void deactivate() {
-    FormKit.of(context)?.unregister(this);
+    FormKit.of(context).unregister(this);
     super.deactivate();
   }
 
   @override
-  void didUpdateWidget(FormKitField oldWidget) {
+  void didUpdateWidget(FormKitField<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.validatorTimerMode != widget.validatorTimerMode ||
         oldWidget.validatorInterval != widget.validatorInterval) {
@@ -122,7 +121,7 @@ class FormKitFieldState<T> extends State<FormKitField<T>> {
     final formKit = FormKit.of(context);
     formKit.register(this);
     if (widget.validator != null) {
-      formKit.setFieldDependencies(this, widget.validator.fieldDependencies);
+      formKit.setFieldDependencies(this, widget.validator!.fieldDependencies);
     }
 
     return StreamBuilder<ValidationState>(
@@ -131,13 +130,13 @@ class FormKitFieldState<T> extends State<FormKitField<T>> {
       builder: (context, snapshot) {
         return widget.builder(
           onChanged,
-          snapshot.data,
+          snapshot.data!,
         );
       },
     );
   }
 
-  void setValue(T value) {
+  void setValue(T? value) {
     widget.onSetValue(value);
 
     final formKit = FormKit.of(context);
@@ -147,10 +146,10 @@ class FormKitFieldState<T> extends State<FormKitField<T>> {
     }
   }
 
-  void onChanged(T value) {
+  void onChanged(T? value) {
     final formKit = FormKit.of(context);
 
-    formKit.onFieldChanged(name, value);
+    formKit.onFieldChanged(this, value);
 
     final autovalidateMode = formKit.widget.autovalidateMode;
     if (autovalidateMode == AutovalidateMode.onUserInteraction ||
@@ -161,21 +160,25 @@ class FormKitFieldState<T> extends State<FormKitField<T>> {
 
   /// Enqueue a new validation through the validation stream
   /// respecting [ValidatorTimerMode].
-  void enqueueValidation(T value) {
-    _validator.add(value);
+  void enqueueValidation(T? value) {
+    _validator!.add(value);
   }
 
   /// Does the field validation process.
   ///
   /// Since this is an external call, it wouldn't pass through through the validation stream.
   /// So the [_validatorResult] will have the validation data added here.
-  Future<String> validate(T value, [Map<String, dynamic> formValues]) async {
-    _validatorResult.add(ValidationState(error: null, isValidating: true));
+  Future<String?> validate(T? value, [Map<String, dynamic>? formValues]) async {
+    if (widget.validator == null) {
+      return null;
+    }
+
+    _validatorResult!.add(ValidationState(error: null, isValidating: true));
 
     final values = formValues ?? FormKit.of(context).values;
-    final error = await widget.validator.validate(value, values);
+    final error = await widget.validator!.validate(value, values);
 
-    _validatorResult.add(ValidationState(error: error, isValidating: false));
+    _validatorResult!.add(ValidationState(error: error, isValidating: false));
 
     return error;
   }
@@ -205,29 +208,23 @@ class FormKitFieldState<T> extends State<FormKitField<T>> {
     /// This way makes possible to add [ValidationState] in multiple ways
     /// from internal changes or external calls
     /// like field value changes and [FormKitState.validate] calls.
-    _validator = BehaviorSubject<T>();
+    _validator = BehaviorSubject<T?>();
     _validatorResult = BehaviorSubject<ValidationState>();
-
-    /// If a validator isn't provided,
-    /// there's not reason to create the validation pipeline
-    if (widget.validator == null) {
-      return;
-    }
 
     /// Pipe [_validator] to a backpressure stream based on [ValidatorTimerMode]
     /// then performs the validation.
     _validationSubscription =
-        _getTimerModeStream(_validator, _effectiveValidatorTimerMode)
+        _getTimerModeStream(_validator!, _effectiveValidatorTimerMode)
             .listen(_validate);
   }
 
-  Future<void> _validate(T value) async {
+  Future<void> _validate(T? value) async {
     final error = await validate(value);
     FormKit.of(context).onFieldValidated(name, error);
   }
 
-  BehaviorSubject<T> _getTimerModeStream(
-      Stream<T> stream, ValidatorTimerMode timerMode) {
+  Stream<T?> _getTimerModeStream(
+      Stream<T?> stream, ValidatorTimerMode timerMode) {
     switch (timerMode) {
       case ValidatorTimerMode.throttle:
         return stream.throttleTime(_effectiveTimerInterval);
@@ -249,10 +246,10 @@ typedef FormKitFieldBuilder<T> = Widget Function(
 
 @immutable
 class ValidationState {
-  final String error;
+  final String? error;
   final bool isValidating;
 
-  ValidationState({this.error, this.isValidating});
+  ValidationState({this.error, this.isValidating = false});
 
   @override
   String toString() {

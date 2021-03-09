@@ -20,8 +20,8 @@ class FormKitMaxValidator extends FormKitValidator<num> {
   FormKitMaxValidator(this.max, this.errorMessageBuilder);
 
   @override
-  Future<String> validate(num value, Map<String, dynamic> formValues) async {
-    if (value > max) {
+  Future<String?> validate(num? value, Map<String, dynamic> formValues) async {
+    if (value != null && value > max) {
       return errorMessageBuilder(value, formValues);
     }
 

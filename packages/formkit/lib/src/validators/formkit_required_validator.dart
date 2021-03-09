@@ -34,7 +34,7 @@ class FormKitRequiredValidator<T> extends FormKitValidator<T> {
   FormKitRequiredValidator(this.errorMessageBuilder);
 
   @override
-  Future<String> validate(T value, Map<String, dynamic> formValues) async {
+  Future<String?> validate(T? value, Map<String, dynamic> formValues) async {
     if (value == null) {
       return errorMessageBuilder(value, formValues);
     }

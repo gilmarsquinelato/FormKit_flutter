@@ -2,6 +2,9 @@ library formkit;
 
 export 'src/formkit.dart';
 
+export 'src/widgets/formkit_submit_builder.dart';
+export 'src/widgets/formkit_show_builder.dart';
+
 export 'src/fields/formkit_field.dart';
 export 'src/fields/formkit_text_field.dart';
 

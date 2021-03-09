@@ -20,8 +20,8 @@ class FormKitMaxLengthValidator extends FormKitValidator<String> {
   FormKitMaxLengthValidator(this.maxLength, this.errorMessageBuilder);
 
   @override
-  Future<String> validate(String value, Map<String, dynamic> formValues) async {
-    if (value.length > maxLength) {
+  Future<String?> validate(String? value, Map<String, dynamic> formValues) async {
+    if (value != null && value.length > maxLength) {
       return errorMessageBuilder(value, formValues);
     }
 

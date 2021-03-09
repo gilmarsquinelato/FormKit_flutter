@@ -1,20 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:formkit/formkit.dart';
 
-class LoginForm extends StatefulWidget {
-  @override
-  _LoginFormState createState() => _LoginFormState();
-}
-
-class _LoginFormState extends State<LoginForm> {
-  GlobalKey<FormKitState> formKey;
-
-  @override
-  void initState() {
-    super.initState();
-    formKey = GlobalKey<FormKitState>();
-  }
-
+class LoginForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,11 +12,10 @@ class _LoginFormState extends State<LoginForm> {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: FormKit(
-            key: formKey,
+            onSubmit: _login,
             autovalidateMode: AutovalidateMode.onUserInteraction,
             validatorTimerMode: ValidatorTimerMode.debounce,
-            // default value
-            // validatorInterval: const Duration(milliseconds: 250),
+            // initialValues: {'email': 'asd'},
             child: Column(
               children: [
                 FormKitTextField(
@@ -37,9 +23,14 @@ class _LoginFormState extends State<LoginForm> {
                   decoration: InputDecoration(
                     labelText: 'Email',
                   ),
-                  validator: FormKitEmailValidator(
-                    constantErrorMessage('Invalid email'),
-                  ),
+                  validator: FormKitValidatorComposer([
+                    FormKitRequiredValidator(
+                      constantErrorMessage('Email is required'),
+                    ),
+                    FormKitEmailValidator(
+                      constantErrorMessage('Invalid email'),
+                    ),
+                  ]),
                 ),
                 FormKitTextField(
                   name: 'password',
@@ -48,14 +39,30 @@ class _LoginFormState extends State<LoginForm> {
                   ),
                   obscureText: true,
                   validatorInterval: const Duration(milliseconds: 100),
-                  validator: FormKitMinLengthValidator(
-                    8,
-                    constantErrorMessage('Password must have at least 8 characters'),
-                  ),
+                  validator: FormKitValidatorComposer([
+                    FormKitRequiredValidator(
+                      constantErrorMessage('Password is required'),
+                    ),
+                    FormKitMinLengthValidator(
+                      8,
+                      constantErrorMessage(
+                          'Password must have at least 8 characters'),
+                    ),
+                  ]),
                 ),
-                ElevatedButton(
-                  child: Text('Login'),
-                  onPressed: _login,
+                FormKitShowBuilder(
+                  fieldName: 'email',
+                  expectedValue: 'asd',
+                  builder: (context) => Text('it works!'),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: FormKitSubmitBuilder(
+                    builder: (_, submit) => ElevatedButton(
+                      child: Text('Login'),
+                      onPressed: submit,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -65,19 +72,8 @@ class _LoginFormState extends State<LoginForm> {
     );
   }
 
-  Future<void> _login() async {
-    print('starting the login process');
-    final form = formKey.currentState;
-    final result = await form.validate();
-
-    print('Validation result: $result');
-
-    if (form.hasErrors) {
-      print('Validation failed');
-      return;
-    }
-
-    final loginData = Login.fromJson(form.values);
+  void _login(Map<String, dynamic?> values) {
+    final loginData = Login.fromJson(values);
     print('Login successful: $loginData');
   }
 }
@@ -86,7 +82,7 @@ class Login {
   final String email;
   final String password;
 
-  Login({this.email, this.password});
+  Login({required this.email, required this.password});
 
   factory Login.fromJson(Map<String, dynamic> json) {
     return Login(

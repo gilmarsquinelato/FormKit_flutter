@@ -23,8 +23,8 @@ import 'package:formkit/formkit.dart';
 /// ```
 class FormKitTextField extends StatefulWidget {
   FormKitTextField({
-    Key key,
-    @required this.name,
+    Key? key,
+    required this.name,
     this.validator,
     this.validatorInterval,
     this.validatorTimerMode,
@@ -82,28 +82,26 @@ class FormKitTextField extends StatefulWidget {
     this.restorationId,
 
     ///#endregion
-  })  : assert(name != null),
-        assert(decoration != null),
-        super(key: key);
+  }) : super(key: key);
 
   /// {@macro formkit.fields.formKitField.name}
   final String name;
 
   /// {@macro formkit.fields.formKitField.validator}
-  final FormKitValidator validator;
+  final FormKitValidator<String>? validator;
 
   /// {@macro formkit.fields.formKitField.validatorInterval}
-  final Duration validatorInterval;
+  final Duration? validatorInterval;
 
   /// {@macro formkit.fields.formKitField.validatorTimerMode}
-  final ValidatorTimerMode validatorTimerMode;
+  final ValidatorTimerMode? validatorTimerMode;
 
   ///#region [TextField] properties
 
   /// Controls the text being edited.
   ///
   /// If null, this widget will create its own [TextEditingController].
-  final TextEditingController controller;
+  final TextEditingController? controller;
 
   /// Defines the keyboard focus for this widget.
   ///
@@ -143,7 +141,7 @@ class FormKitTextField extends StatefulWidget {
   ///
   /// This widget builds an [EditableText] and will ensure that the keyboard is
   /// showing when it is tapped by calling [EditableTextState.requestKeyboard()].
-  final FocusNode focusNode;
+  final FocusNode? focusNode;
 
   /// The decoration to show around the text field.
   ///
@@ -155,13 +153,13 @@ class FormKitTextField extends StatefulWidget {
   final InputDecoration decoration;
 
   /// {@macro flutter.widgets.editableText.keyboardType}
-  final TextInputType keyboardType;
+  final TextInputType? keyboardType;
 
   /// The type of action button to use for the keyboard.
   ///
   /// Defaults to [TextInputAction.newline] if [keyboardType] is
   /// [TextInputType.multiline] and [TextInputAction.done] otherwise.
-  final TextInputAction textInputAction;
+  final TextInputAction? textInputAction;
 
   /// {@macro flutter.widgets.editableText.textCapitalization}
   final TextCapitalization textCapitalization;
@@ -171,19 +169,19 @@ class FormKitTextField extends StatefulWidget {
   /// This text style is also used as the base style for the [decoration].
   ///
   /// If null, defaults to the `subtitle1` text style from the current [Theme].
-  final TextStyle style;
+  final TextStyle? style;
 
   /// {@macro flutter.widgets.editableText.strutStyle}
-  final StrutStyle strutStyle;
+  final StrutStyle? strutStyle;
 
   /// {@macro flutter.widgets.editableText.textAlign}
   final TextAlign textAlign;
 
   /// {@macro flutter.material.InputDecorator.textAlignVertical}
-  final TextAlignVertical textAlignVertical;
+  final TextAlignVertical? textAlignVertical;
 
   /// {@macro flutter.widgets.editableText.textDirection}
-  final TextDirection textDirection;
+  final TextDirection? textDirection;
 
   /// {@macro flutter.widgets.editableText.autofocus}
   final bool autofocus;
@@ -198,10 +196,10 @@ class FormKitTextField extends StatefulWidget {
   final bool autocorrect;
 
   /// {@macro flutter.services.TextInputConfiguration.smartDashesType}
-  final SmartDashesType smartDashesType;
+  final SmartDashesType? smartDashesType;
 
   /// {@macro flutter.services.TextInputConfiguration.smartQuotesType}
-  final SmartQuotesType smartQuotesType;
+  final SmartQuotesType? smartQuotesType;
 
   /// {@macro flutter.services.TextInputConfiguration.enableSuggestions}
   final bool enableSuggestions;
@@ -210,7 +208,7 @@ class FormKitTextField extends StatefulWidget {
   final int maxLines;
 
   /// {@macro flutter.widgets.editableText.minLines}
-  final int minLines;
+  final int? minLines;
 
   /// {@macro flutter.widgets.editableText.expands}
   final bool expands;
@@ -223,10 +221,10 @@ class FormKitTextField extends StatefulWidget {
   /// If not set, select all and paste will default to be enabled. Copy and cut
   /// will be disabled if [obscureText] is true. If [readOnly] is true,
   /// paste and cut will be disabled regardless.
-  final ToolbarOptions toolbarOptions;
+  final ToolbarOptions? toolbarOptions;
 
   /// {@macro flutter.widgets.editableText.showCursor}
-  final bool showCursor;
+  final bool? showCursor;
 
   /// If [maxLength] is set to this value, only the "current input length"
   /// part of the character counter is shown.
@@ -261,14 +259,14 @@ class FormKitTextField extends StatefulWidget {
   /// exceeded.
   ///
   /// {@macro flutter.services.lengthLimitingTextInputFormatter.maxLength}
-  final int maxLength;
+  final int? maxLength;
 
   /// Determines how the [maxLength] limit should be enforced.
   ///
   /// {@macro flutter.services.textFormatter.effectiveMaxLengthEnforcement}
   ///
   /// {@macro flutter.services.textFormatter.maxLengthEnforcement}
-  final MaxLengthEnforcement maxLengthEnforcement;
+  final MaxLengthEnforcement? maxLengthEnforcement;
 
   /// {@macro flutter.widgets.editableText.onChanged}
   ///
@@ -278,10 +276,10 @@ class FormKitTextField extends StatefulWidget {
   ///    runs and can validate and change ("format") the input value.
   ///  * [onEditingComplete], [onSubmitted]:
   ///    which are more specialized input change notifications.
-  final ValueChanged<String> onChanged;
+  final ValueChanged<String>? onChanged;
 
   /// {@macro flutter.widgets.editableText.onEditingComplete}
-  final VoidCallback onEditingComplete;
+  final VoidCallback? onEditingComplete;
 
   /// {@macro flutter.widgets.editableText.onSubmitted}
   ///
@@ -290,29 +288,29 @@ class FormKitTextField extends StatefulWidget {
   ///  * [TextInputAction.next] and [TextInputAction.previous], which
   ///    automatically shift the focus to the next/previous focusable item when
   ///    the user is done editing.
-  final ValueChanged<String> onSubmitted;
+  final ValueChanged<String>? onSubmitted;
 
   /// {@macro flutter.widgets.editableText.onAppPrivateCommand}
-  final AppPrivateCommandCallback onAppPrivateCommand;
+  final AppPrivateCommandCallback? onAppPrivateCommand;
 
   /// {@macro flutter.widgets.editableText.inputFormatters}
-  final List<TextInputFormatter> inputFormatters;
+  final List<TextInputFormatter>? inputFormatters;
 
   /// If false the text field is "disabled": it ignores taps and its
   /// [decoration] is rendered in grey.
   ///
   /// If non-null this property overrides the [decoration]'s
   /// [InputDecoration.enabled] property.
-  final bool enabled;
+  final bool? enabled;
 
   /// {@macro flutter.widgets.editableText.cursorWidth}
   final double cursorWidth;
 
   /// {@macro flutter.widgets.editableText.cursorHeight}
-  final double cursorHeight;
+  final double? cursorHeight;
 
   /// {@macro flutter.widgets.editableText.cursorRadius}
-  final Radius cursorRadius;
+  final Radius? cursorRadius;
 
   /// The color of the cursor.
   ///
@@ -324,7 +322,7 @@ class FormKitTextField extends StatefulWidget {
   /// [ThemeData.platform] is [TargetPlatform.iOS] or [TargetPlatform.macOS]
   /// it will use [CupertinoThemeData.primaryColor]. Otherwise it will use
   /// the value of [ColorScheme.primary] of [ThemeData.colorScheme].
-  final Color cursorColor;
+  final Color? cursorColor;
 
   /// Controls how tall the selection highlight boxes are computed to be.
   ///
@@ -341,7 +339,7 @@ class FormKitTextField extends StatefulWidget {
   /// This setting is only honored on iOS devices.
   ///
   /// If unset, defaults to the brightness of [ThemeData.primaryColorBrightness].
-  final Brightness keyboardAppearance;
+  final Brightness? keyboardAppearance;
 
   /// {@macro flutter.widgets.editableText.scrollPadding}
   final EdgeInsets scrollPadding;
@@ -350,7 +348,7 @@ class FormKitTextField extends StatefulWidget {
   final bool enableInteractiveSelection;
 
   /// {@macro flutter.widgets.editableText.selectionControls}
-  final TextSelectionControls selectionControls;
+  final TextSelectionControls? selectionControls;
 
   /// {@macro flutter.widgets.scrollable.dragStartBehavior}
   final DragStartBehavior dragStartBehavior;
@@ -378,7 +376,7 @@ class FormKitTextField extends StatefulWidget {
   /// To listen to arbitrary pointer events without competing with the
   /// text field's internal gesture detector, use a [Listener].
   /// {@endtemplate}
-  final GestureTapCallback onTap;
+  final GestureTapCallback? onTap;
 
   /// The cursor for a mouse pointer when it enters or is hovering over the
   /// widget.
@@ -397,7 +395,7 @@ class FormKitTextField extends StatefulWidget {
   /// appearance of the mouse pointer. All other properties related to "cursor"
   /// stand for the text cursor, which is usually a blinking vertical line at
   /// the editing position.
-  final MouseCursor mouseCursor;
+  final MouseCursor? mouseCursor;
 
   /// Callback that generates a custom [InputDecoration.counter] widget.
   ///
@@ -429,17 +427,17 @@ class FormKitTextField extends StatefulWidget {
   ///
   /// If buildCounter returns null, then no counter and no Semantics widget will
   /// be created at all.
-  final InputCounterWidgetBuilder buildCounter;
+  final InputCounterWidgetBuilder? buildCounter;
 
   /// {@macro flutter.widgets.editableText.scrollPhysics}
-  final ScrollPhysics scrollPhysics;
+  final ScrollPhysics? scrollPhysics;
 
   /// {@macro flutter.widgets.editableText.scrollController}
-  final ScrollController scrollController;
+  final ScrollController? scrollController;
 
   /// {@macro flutter.widgets.editableText.autofillHints}
   /// {@macro flutter.services.AutofillConfiguration.autofillHints}
-  final Iterable<String> autofillHints;
+  final Iterable<String>? autofillHints;
 
   /// {@template flutter.material.textfield.restorationId}
   /// Restoration ID to save and restore the state of the text field.
@@ -458,7 +456,7 @@ class FormKitTextField extends StatefulWidget {
   ///  * [RestorationManager], which explains how state restoration works in
   ///    Flutter.
   /// {@endtemplate}
-  final String restorationId;
+  final String? restorationId;
 
   ///#endregion
 
@@ -469,10 +467,11 @@ class FormKitTextField extends StatefulWidget {
 class _FormKitTextFieldState extends State<FormKitTextField> {
   final TextEditingController _fallbackController = TextEditingController();
 
-  TextEditingController get _controller => widget.controller ?? _fallbackController;
+  TextEditingController get _controller =>
+      widget.controller ?? _fallbackController;
 
-  void onSetValue(String value) {
-    _controller.text = value;
+  void onSetValue(String? value) {
+    _controller.text = value ?? '';
     if (value != null) {
       _controller.selection = TextSelection.collapsed(offset: value.length);
     }
@@ -494,7 +493,7 @@ class _FormKitTextFieldState extends State<FormKitTextField> {
           onChanged: (value) {
             onChanged(value);
             if (widget.onChanged != null) {
-              widget.onChanged(value);
+              widget.onChanged!(value);
             }
           },
           decoration: decoration,
@@ -534,7 +533,7 @@ class _FormKitTextFieldState extends State<FormKitTextField> {
           onEditingComplete: widget.onEditingComplete,
           onSubmitted: widget.onSubmitted,
           inputFormatters: widget.inputFormatters,
-          enabled: widget.enabled ?? decoration.enabled ?? true,
+          enabled: widget.enabled ?? decoration.enabled,
           cursorWidth: widget.cursorWidth,
           cursorHeight: widget.cursorHeight,
           cursorRadius: widget.cursorRadius,

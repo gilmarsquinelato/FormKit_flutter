@@ -20,8 +20,8 @@ class FormKitMinLengthValidator extends FormKitValidator<String> {
   FormKitMinLengthValidator(this.minLength, this.errorMessageBuilder);
 
   @override
-  Future<String> validate(String value, Map<String, dynamic> formValues) async {
-    if (value.length < minLength) {
+  Future<String?> validate(String? value, Map<String, dynamic> formValues) async {
+    if (value != null && value.length < minLength) {
       return errorMessageBuilder(value, formValues);
     }
 

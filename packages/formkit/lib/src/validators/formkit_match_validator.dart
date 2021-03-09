@@ -20,8 +20,8 @@ class FormKitMatchValidator extends FormKitValidator<String> {
   FormKitMatchValidator(this.pattern, this.errorMessageBuilder);
 
   @override
-  Future<String> validate(String value, Map<String, dynamic> formValues) async {
-    if (!pattern.hasMatch(value)) {
+  Future<String?> validate(String? value, Map<String, dynamic> formValues) async {
+    if (value != null && !pattern.hasMatch(value)) {
       return errorMessageBuilder(value, formValues);
     }
 

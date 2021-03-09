@@ -20,8 +20,8 @@ class FormKitMinValidator extends FormKitValidator<num> {
   FormKitMinValidator(this.min, this.errorMessageBuilder);
 
   @override
-  Future<String> validate(num value, Map<String, dynamic> formValues) async {
-    if (value < min) {
+  Future<String?> validate(num? value, Map<String, dynamic> formValues) async {
+    if (value != null && value < min) {
       return errorMessageBuilder(value, formValues);
     }
 

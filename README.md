@@ -54,8 +54,8 @@ This library is not stable yet!
 - [x] Trigger validation respecting backpressure
 - [x] Retrieve form errors
 - [x] Retrieve form values
-- [ ] onSubmit callback
-- [ ] FormKitSubmitBuilder - it will possibilitate to not have a key to control the form
+- [x] onSubmit callback
+- [x] FormKitSubmitBuilder - it will possibilitate to not have a key to control the form
 ```dart
 FormKitSubmitBuilder(
   builder: (context, submit) => {
@@ -67,6 +67,7 @@ FormKitSubmitBuilder(
 )
 ```
 - [ ] Jump to next field on press enter or tab
+- [ ] Show or hide fields based on another form field value
 
 ### To do:
 

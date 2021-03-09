@@ -20,7 +20,7 @@ class FormKitEqualValidator<T> extends FormKitValidator<T> {
   FormKitEqualValidator(this.expectedValue, this.errorMessageBuilder);
 
   @override
-  Future<String> validate(T value, Map<String, dynamic> formValues) async {
+  Future<String?> validate(T? value, Map<String, dynamic> formValues) async {
     if (value != expectedValue) {
       return errorMessageBuilder(value, formValues);
     }

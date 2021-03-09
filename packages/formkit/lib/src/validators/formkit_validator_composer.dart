@@ -7,7 +7,16 @@ import 'package:formkit/src/validators/formkit_validator.dart';
 /// returning the first error found or null if no error messages given
 ///
 /// {@tool snippet}
-/// TODO: implement example
+/// ```dart
+/// FormKitValidatorComposer([
+///   FormKitRequiredValidator(
+///     constantErrorMessage('Email is required'),
+///   ),
+///   FormKitEmailValidator(
+///     constantErrorMessage('Invalid email'),
+///   ),
+/// ])
+/// ```
 /// {@end-tool}
 class FormKitValidatorComposer<T> extends FormKitValidator<T> {
   final List<FormKitValidator<T>> validators;
@@ -19,7 +28,7 @@ class FormKitValidatorComposer<T> extends FormKitValidator<T> {
   }
 
   @override
-  Future<String> validate(T value, Map<String, dynamic> formValues) async {
+  Future<String?> validate(T? value, Map<String, dynamic> formValues) async {
     for (final validator in validators) {
       final error = await validator.validate(value, formValues);
       if (error != null) {

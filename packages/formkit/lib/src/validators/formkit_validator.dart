@@ -18,12 +18,12 @@ abstract class FormKitValidator<T> {
   final Set<String> fieldDependencies = Set();
 
   /// The validation process.
-  Future<String> validate(T value, Map<String, dynamic> formValues);
+  Future<String?> validate(T? value, Map<String, dynamic> formValues);
 }
 
 typedef ErrorMessageBuilder<T> = String Function(
-    T value, Map<String, dynamic> formValues);
+    T? value, Map<String, dynamic> formValues);
 
 /// A helper function to reduce the verbosity of creating an error message for the validators.
-ErrorMessageBuilder<T> constantErrorMessage<T>(String errorMessage) =>
-    (T value, Map<String, dynamic> formValues) => errorMessage;
+ErrorMessageBuilder<T?> constantErrorMessage<T>(String errorMessage) =>
+    (T? value, Map<String, dynamic> formValues) => errorMessage;

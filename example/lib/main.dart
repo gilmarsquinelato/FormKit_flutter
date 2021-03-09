@@ -28,6 +28,9 @@ class ExamplesCatalog extends StatelessWidget {
       body: ListView(
         children: [
           ListTile(
+            title: const Text('Select one of the examples below'),
+          ),
+          ListTile(
             title: const Text('Basic form (Login Form)'),
             onTap: () => Navigator.of(context).push(MaterialPageRoute(
               builder: (_) => LoginForm(),

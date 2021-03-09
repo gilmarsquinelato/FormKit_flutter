@@ -28,7 +28,7 @@ class FormKitEqualFieldValidator<T> extends FormKitValidator<T> {
   }
 
   @override
-  Future<String> validate(T value, Map<String, dynamic> formValues) async {
+  Future<String?> validate(T? value, Map<String, dynamic> formValues) async {
     if (value != formValues[otherFieldName]) {
       return errorMessageBuilder(value, formValues);
     }
