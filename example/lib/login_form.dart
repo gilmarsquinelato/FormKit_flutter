@@ -15,7 +15,6 @@ class LoginForm extends StatelessWidget {
             onSubmit: _login,
             autovalidateMode: AutovalidateMode.onUserInteraction,
             validatorTimerMode: ValidatorTimerMode.debounce,
-            // initialValues: {'email': 'asd'},
             child: Column(
               children: [
                 FormKitTextField(
@@ -49,11 +48,6 @@ class LoginForm extends StatelessWidget {
                           'Password must have at least 8 characters'),
                     ),
                   ]),
-                ),
-                FormKitShowBuilder(
-                  fieldName: 'email',
-                  expectedValue: 'asd',
-                  builder: (context) => Text('it works!'),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),

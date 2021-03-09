@@ -55,7 +55,7 @@ This library is not stable yet!
 - [x] Retrieve form errors
 - [x] Retrieve form values
 - [x] onSubmit callback
-- [x] FormKitSubmitBuilder - it will possibilitate to not have a key to control the form
+- [x] FormKitSubmitBuilder: [code](./packages/formkit/lib/src/widgets/formkit_submit_builder.dart)
 ```dart
 FormKitSubmitBuilder(
   builder: (context, submit) => {
@@ -67,7 +67,7 @@ FormKitSubmitBuilder(
 )
 ```
 - [ ] Jump to next field on press enter or tab
-- [ ] Show or hide fields based on another form field value
+- [x] FormKitShowBuilder: [code](./packages/formkit/lib/src/widgets/formkit_show_builder.dart)
 
 ### To do:
 

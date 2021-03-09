@@ -2,7 +2,17 @@ import 'package:flutter/widgets.dart';
 import 'package:formkit/formkit.dart';
 
 /// This widget will show its child only if
-/// the given field has the expected given value
+/// the given field has the expected given value.
+///
+/// {@tool snippet}
+/// ```dart
+/// FormKitShowBuilder(
+///   fieldName: 'name',
+///   expectedValue: 'Testing',
+///   builder: (context) => Text('it works!'),
+/// );
+/// ```
+/// {@end-tool}
 class FormKitShowBuilder<T> extends StatelessWidget {
   const FormKitShowBuilder({
     Key? key,
