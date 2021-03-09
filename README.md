@@ -48,7 +48,7 @@ This library is not stable yet!
 - [x] All public interface accessible via context or key
 - [x] Context based access: ```FormKit.of(context)```
 - [x] Key based access
-- [x] Initial fields values: `initialValues: {}` -- (`Map<String, dynamic>()`)
+- [x] Initial fields values: `initialValues: {}` -- (`Map<String, dynamic?>()`)
 - [x] Dynamically set the fields value: `FormKit.of(context).setValues({})` or `formKey.currentState.setValues({})`
 - [x] Trigger validation
 - [x] Trigger validation respecting backpressure
