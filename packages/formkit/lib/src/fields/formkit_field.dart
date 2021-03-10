@@ -76,8 +76,9 @@ class FormKitFieldState<T> extends State<FormKitField<T>> {
   String get name => widget.name;
 
   BehaviorSubject<T?>? _validator;
-  BehaviorSubject<ValidationState>? _validatorResult;
-  StreamSubscription<T?>? _validationSubscription;
+  StreamSubscription<T?>? _validatorSubscription;
+  ValidationState _validationState =
+      ValidationState(error: null, isValidating: false);
 
   Duration get _effectiveTimerInterval =>
       widget.validatorInterval ??
@@ -124,15 +125,9 @@ class FormKitFieldState<T> extends State<FormKitField<T>> {
       formKit.setFieldDependencies(this, widget.validator!.fieldDependencies);
     }
 
-    return StreamBuilder<ValidationState>(
-      stream: _validatorResult,
-      initialData: ValidationState(error: null, isValidating: false),
-      builder: (context, snapshot) {
-        return widget.builder(
-          onChanged,
-          snapshot.data!,
-        );
-      },
+    return widget.builder(
+      onChanged,
+      _validationState,
     );
   }
 
@@ -161,7 +156,7 @@ class FormKitFieldState<T> extends State<FormKitField<T>> {
   /// Enqueue a new validation through the validation stream
   /// respecting [ValidatorTimerMode].
   void enqueueValidation(T? value) {
-    _validator!.add(value);
+    _validator!.sink.add(value);
   }
 
   /// Does the field validation process.
@@ -173,12 +168,16 @@ class FormKitFieldState<T> extends State<FormKitField<T>> {
       return null;
     }
 
-    _validatorResult!.add(ValidationState(error: null, isValidating: true));
+    setState(() {
+      _validationState = ValidationState(error: null, isValidating: true);
+    });
 
     final values = formValues ?? FormKit.of(context).values;
     final error = await widget.validator!.validate(value, values);
 
-    _validatorResult!.add(ValidationState(error: error, isValidating: false));
+    setState(() {
+      _validationState = ValidationState(error: error, isValidating: false);
+    });
 
     return error;
   }
@@ -196,9 +195,8 @@ class FormKitFieldState<T> extends State<FormKitField<T>> {
   }
 
   void _closeStreams() {
-    _validationSubscription?.cancel();
+    _validatorSubscription?.cancel();
     _validator?.close();
-    _validatorResult?.close();
   }
 
   @internal
@@ -209,29 +207,25 @@ class FormKitFieldState<T> extends State<FormKitField<T>> {
     /// from internal changes or external calls
     /// like field value changes and [FormKitState.validate] calls.
     _validator = BehaviorSubject<T?>();
-    _validatorResult = BehaviorSubject<ValidationState>();
 
     /// Pipe [_validator] to a backpressure stream based on [ValidatorTimerMode]
     /// then performs the validation.
-    _validationSubscription =
-        _getTimerModeStream(_validator!, _effectiveValidatorTimerMode)
-            .listen(_validate);
+    _validatorSubscription =
+        _getTimerModeStream(_validator!)
+        .listen((value) async {
+          final error = await validate(value);
+          FormKit.of(context).onFieldValidated(name, error);
+        });
   }
 
-  Future<void> _validate(T? value) async {
-    final error = await validate(value);
-    FormKit.of(context).onFieldValidated(name, error);
-  }
-
-  Stream<T?> _getTimerModeStream(
-      Stream<T?> stream, ValidatorTimerMode timerMode) {
-    switch (timerMode) {
+  Stream<T?> _getTimerModeStream(BehaviorSubject<T?> subject) {
+    switch (_effectiveValidatorTimerMode) {
       case ValidatorTimerMode.throttle:
-        return stream.throttleTime(_effectiveTimerInterval);
+        return subject.throttleTime(_effectiveTimerInterval);
       case ValidatorTimerMode.debounce:
-        return stream.debounceTime(_effectiveTimerInterval);
+        return subject.debounceTime(_effectiveTimerInterval);
       default:
-        return stream;
+        return subject;
     }
   }
 }

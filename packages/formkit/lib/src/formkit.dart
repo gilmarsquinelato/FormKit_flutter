@@ -277,7 +277,7 @@ class FormKitState extends State<FormKit> {
   void register(FormKitFieldState field) {
     _fields.add(field);
 
-    if (widget.initialValues != null) {
+    if (widget.initialValues != null && _values.containsKey(field.name)) {
       field.setValue(_values[field.name]);
     }
   }
@@ -288,7 +288,11 @@ class FormKitState extends State<FormKit> {
   }
 
   @internal
-  void unregister(FormKitFieldState field) => _fields.remove(field);
+  void unregister(FormKitFieldState field) {
+    _fields.remove(field);
+    _dirtyFields.remove(field);
+    _fieldDependencies.remove(field);
+  }
 
   @internal
   void onFieldChanged(FormKitFieldState field, dynamic value) {
@@ -298,8 +302,6 @@ class FormKitState extends State<FormKit> {
     if (widget.autovalidateMode == AutovalidateMode.onUserInteraction) {
       _validateDependentFields(field.name);
     }
-
-    _forceUpdate();
   }
 
   @internal

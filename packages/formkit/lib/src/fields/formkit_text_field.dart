@@ -6,13 +6,9 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:formkit/formkit.dart';
 
-/// FormKit text field widget
+/// FormKit material [TextField] field wrapper
 ///
-/// It basically wraps the [TextField] widget with [FormKitField]
-///
-///
-/// This is the most basic way to use this widget
-///
+/// {@tool snippet}
 /// ```dart
 /// FormKitTextField(
 ///   name: 'email',
@@ -21,6 +17,7 @@ import 'package:formkit/formkit.dart';
 ///   )
 /// )
 /// ```
+/// {@end-tool}
 class FormKitTextField extends StatefulWidget {
   FormKitTextField({
     Key? key,

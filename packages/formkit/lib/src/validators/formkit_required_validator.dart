@@ -43,6 +43,10 @@ class FormKitRequiredValidator<T> extends FormKitValidator<T> {
       return errorMessageBuilder(value, formValues);
     }
 
+    if (value is bool && !value) {
+      return errorMessageBuilder(value, formValues);
+    }
+
     return null;
   }
 }

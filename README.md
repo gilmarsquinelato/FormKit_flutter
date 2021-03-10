@@ -34,8 +34,7 @@ This library is not stable yet!
 
 - [x] Custom user defined field: [code](./packages/formkit/lib/src/fields/formkit_field.dart)
 - [x] Text Field: [code](./packages/formkit/lib/src/fields/formkit_text_field.dart)
-- - [x] Supports all Material TextField widget properties
-- [ ] Checkbox Field
+- [x] Checkbox Field: [code](./packages/formkit/lib/src/fields/formkit_checkbox_field.dart)
 - [ ] Date Field
 - [ ] Time Field
 - [ ] DateTime Field

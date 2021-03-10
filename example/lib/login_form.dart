@@ -49,11 +49,18 @@ class LoginForm extends StatelessWidget {
                     ),
                   ]),
                 ),
+                FormKitCheckboxField(
+                  name: 'remember',
+                  title: const Text('Remember me'),
+                  validator: FormKitRequiredValidator(
+                    constantErrorMessage('You must be remembered!'),
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: FormKitSubmitBuilder(
                     builder: (_, submit) => ElevatedButton(
-                      child: Text('Login'),
+                      child: const Text('Login'),
                       onPressed: submit,
                     ),
                   ),
@@ -67,26 +74,6 @@ class LoginForm extends StatelessWidget {
   }
 
   void _login(Map<String, dynamic?> values) {
-    final loginData = Login.fromJson(values);
-    print('Login successful: $loginData');
-  }
-}
-
-class Login {
-  final String email;
-  final String password;
-
-  Login({required this.email, required this.password});
-
-  factory Login.fromJson(Map<String, dynamic> json) {
-    return Login(
-      email: json['email'],
-      password: json['password'],
-    );
-  }
-
-  @override
-  String toString() {
-    return 'Login(email: $email, password: $password)';
+    print('Login successful: $values');
   }
 }

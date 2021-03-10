@@ -7,6 +7,7 @@ export 'src/widgets/formkit_show_builder.dart';
 
 export 'src/fields/formkit_field.dart';
 export 'src/fields/formkit_text_field.dart';
+export 'src/fields/formkit_checkbox_field.dart';
 
 export 'src/validators/formkit_validator.dart';
 export 'src/validators/formkit_validator_composer.dart';
