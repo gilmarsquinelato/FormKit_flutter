@@ -37,8 +37,8 @@ This library is not stable yet!
 - - [x] Text Field: [code](./packages/formkit/lib/src/fields/formkit_text_field.dart)
 - - [x] Checkbox Field: [code](./packages/formkit/lib/src/fields/formkit_checkbox_field.dart)
 - - [x] Date Field: [code](./packages/formkit/lib/src/fields/formkit_date_field.dart)
-- - [x] Time Field
-- - [ ] DateTime Field
+- - [x] Date range Field: [code](./packages/formkit/lib/src/fields/formkit_daterange_field.dart)
+- - [x] Time Field: [code](./packages/formkit/lib/src/fields/formkit_time_field.dart)
 - - [ ] Radio Field
 - - [ ] Slider Field
 - - [ ] Switch Field

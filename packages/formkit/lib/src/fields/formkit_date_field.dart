@@ -32,6 +32,7 @@ class FormKitDateField extends StatefulWidget {
     this.initialDate,
     required this.firstDate,
     required this.lastDate,
+    this.initialDatePickerMode = DatePickerMode.day,
     this.dateFormatter,
 
     ///#region [TextField] properties
@@ -93,6 +94,11 @@ class FormKitDateField extends StatefulWidget {
 
   /// The [lastDate] is the latest allowable date.
   final DateTime lastDate;
+
+  /// Used to have the calendar date picker initially appear in the [DatePickerMode.year] or
+  /// [DatePickerMode.day] mode. It defaults to [DatePickerMode.day], and
+  /// must be non-null.
+  final DatePickerMode initialDatePickerMode;
 
   ///#region [TextField] properties
 
@@ -179,7 +185,7 @@ class FormKitDateField extends StatefulWidget {
   /// paste and cut will be disabled regardless.
   final ToolbarOptions? toolbarOptions;
 
-/// Triggered once the the date is confirmed in the picker dialog
+  /// Triggered once the the date is confirmed in the picker dialog
   final ValueChanged<DateTime?>? onChanged;
 
   /// {@macro flutter.widgets.editableText.onAppPrivateCommand}
@@ -390,6 +396,7 @@ class _FormKitDateFieldState extends State<FormKitDateField> {
           initialDate: _initialDate,
           firstDate: widget.firstDate,
           lastDate: widget.lastDate,
+          initialDatePickerMode: widget.initialDatePickerMode,
         );
 
         if (date != null) {

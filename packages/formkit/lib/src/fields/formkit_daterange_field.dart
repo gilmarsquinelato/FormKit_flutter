@@ -3,22 +3,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:formkit/formkit.dart';
 
-/// FormKit material Date picker field
+/// FormKit material Date range picker field
 ///
-/// It's a readonly [TextField] with a clock icon button
+/// It's a readonly [TextField] with a date range icon button
 ///
 /// {@tool snippet}
 /// ```dart
-/// FormKitTimeField(
-///   name: 'schedule',
+/// FormKitDateRangeField(
+///   name: 'bookingRange',
 ///   decoration: const InputDecoration(
-///     labelText: 'Schedule',
+///     labelText: 'Booking range',
 ///   ),
+///   initialDateRange: DateTimeRange(
+///     start: DateTime.now().subtract(Duration(days: 60)),
+///     end: DateTime.now(),
+///   ),
+///   firstDate: DateTime(1900),
+///   lastDate: DateTime.now(),
 /// )
 /// ```
 /// {@end-tool}
-class FormKitTimeField extends StatefulWidget {
-  const FormKitTimeField({
+class FormKitDateRangeField extends StatefulWidget {
+  const FormKitDateRangeField({
     Key? key,
     required this.name,
     this.validator,
@@ -26,9 +32,12 @@ class FormKitTimeField extends StatefulWidget {
     this.validatorTimerMode,
     this.enabled,
     this.decoration = const InputDecoration(),
-    this.calendarIcon = const Icon(Icons.access_time),
-    this.initialTime,
-    this.timeFormatter,
+    this.calendarIcon = const Icon(Icons.date_range),
+    this.initialDateRange,
+    required this.firstDate,
+    required this.lastDate,
+    this.dateTimeRangeFormatter,
+    this.dateFormatter,
 
     ///#region [TextField] properties
     this.controller,
@@ -59,7 +68,7 @@ class FormKitTimeField extends StatefulWidget {
   final String name;
 
   /// {@macro formkit.fields.formKitField.validator}
-  final FormKitValidator<TimeOfDay?>? validator;
+  final FormKitValidator<DateTimeRange?>? validator;
 
   /// {@macro formkit.fields.formKitField.validatorInterval}
   final Duration? validatorInterval;
@@ -70,17 +79,33 @@ class FormKitTimeField extends StatefulWidget {
   /// The Icon that will be used in the calendar button
   final Icon calendarIcon;
 
-  /// The date formatter to be used while displaying the value
+  /// The date range formatter to be used while displaying the value
   ///
-  /// By default the field will use [MaterialLocalizations.formatTimeOfDay].
-  final TimeFormatter? timeFormatter;
+  /// By default the field will be formatted with the following format:
+  /// ```dart
+  /// '${dateFormatter(start)} - ${dateFormatter(end)}'
+  /// ```
+  final DateTimeRangeFormatter? dateTimeRangeFormatter;
 
-  /// The default time to be displayed when the time picker is displayed.
+  /// The date formatter to be used individually on each date of the range
+  ///
+  /// By default the field will use [MaterialLocalizations.formatCompactDate].
+  final DateFormatter? dateFormatter;
+
+  /// [initialDateRange] must either fall between [firstDate] and [lastDate],
+  /// or be equal to one of them. For each of these [DateTime] parameters, only
+  /// their dates are considered. Their time fields are ignored.
   ///
   /// If not provided, the [FormKit] value will be used instead,
   /// if [FormKit] don't have a value for this field
-  /// [TimeOfDay.now()] will be used instead.
-  final TimeOfDay? initialTime;
+  /// [DateTimeRange(start: DateTime.now(), end: DateTime.now())] will be used instead.
+  final DateTimeRange? initialDateRange;
+
+  /// The [firstDate] is the earliest allowable date.
+  final DateTime firstDate;
+
+  /// The [lastDate] is the latest allowable date.
+  final DateTime lastDate;
 
   ///#region [TextField] properties
 
@@ -167,8 +192,8 @@ class FormKitTimeField extends StatefulWidget {
   /// paste and cut will be disabled regardless.
   final ToolbarOptions? toolbarOptions;
 
-  /// Triggered once the the time is confirmed in the picker dialog
-  final ValueChanged<TimeOfDay?>? onChanged;
+  /// Triggered once the the date range is confirmed in the picker dialog
+  final ValueChanged<DateTimeRange?>? onChanged;
 
   /// {@macro flutter.widgets.editableText.onAppPrivateCommand}
   final AppPrivateCommandCallback? onAppPrivateCommand;
@@ -274,27 +299,38 @@ class FormKitTimeField extends StatefulWidget {
   ///#endregion
 
   @override
-  _FormKitTimeFieldState createState() => _FormKitTimeFieldState();
+  _FormKitDateRangeFieldState createState() => _FormKitDateRangeFieldState();
 }
 
-class _FormKitTimeFieldState extends State<FormKitTimeField> {
-  TimeOfDay? _value;
+class _FormKitDateRangeFieldState extends State<FormKitDateRangeField> {
+  DateTimeRange? _value;
 
   TextEditingController? _fallbackController;
   TextEditingController get _controller =>
       widget.controller ?? (_fallbackController ??= TextEditingController());
 
   bool get _enabled => widget.enabled ?? FormKit.of(context).widget.enabled;
-  TimeOfDay get _initialTime => widget.initialTime ?? _value ?? TimeOfDay.now();
-  TimeFormatter get _timeFormatter =>
-      widget.timeFormatter ??
-      MaterialLocalizations.of(context).formatTimeOfDay;
+  DateTimeRange get _initialDateRange =>
+      widget.initialDateRange ??
+      _value ??
+      DateTimeRange(start: DateTime.now(), end: DateTime.now());
 
-  void _onSetValue(TimeOfDay? value) {
+  DateTimeRangeFormatter get _dateRangeFormatter =>
+      widget.dateTimeRangeFormatter ?? _defaultDateRangeFormatter;
+
+  DateFormatter get _dateFormatter =>
+      widget.dateFormatter ??
+      MaterialLocalizations.of(context).formatCompactDate;
+
+  String _defaultDateRangeFormatter(DateTimeRange range) {
+    return '${_dateFormatter(range.start)} - ${_dateFormatter(range.end)}';
+  }
+
+  void _onSetValue(DateTimeRange? value) {
     _value = value;
 
     if (value != null) {
-      _controller.text = _timeFormatter(value);
+      _controller.text = _dateRangeFormatter(value);
       _controller.selection =
           TextSelection.collapsed(offset: _controller.text.length);
     } else {
@@ -304,7 +340,7 @@ class _FormKitTimeFieldState extends State<FormKitTimeField> {
 
   @override
   Widget build(BuildContext context) {
-    return FormKitField<TimeOfDay?>(
+    return FormKitField<DateTimeRange?>(
       name: widget.name,
       validator: widget.validator,
       validatorInterval: widget.validatorInterval,
@@ -341,7 +377,7 @@ class _FormKitTimeFieldState extends State<FormKitTimeField> {
   }
 
   InputDecoration _getDecoration(
-    ValueChanged<TimeOfDay?> onChanged,
+    ValueChanged<DateTimeRange?> onChanged,
     ValidationState validationState,
   ) {
     final suffix = validationState.isValidating
@@ -369,21 +405,23 @@ class _FormKitTimeFieldState extends State<FormKitTimeField> {
     );
   }
 
-  Widget _buildCalendarButtonSuffix(ValueChanged<TimeOfDay?> onChanged) {
+  Widget _buildCalendarButtonSuffix(ValueChanged<DateTimeRange?> onChanged) {
     return IconButton(
       icon: widget.calendarIcon,
       onPressed: () async {
-        final time = await showTimePicker(
+        final dateRange = await showDateRangePicker(
           context: context,
-          initialTime: _initialTime,
+          initialDateRange: _initialDateRange,
+          firstDate: widget.firstDate,
+          lastDate: widget.lastDate,
         );
 
-        if (time != null) {
-          onChanged(time);
-          _onSetValue(time);
+        if (dateRange != null) {
+          onChanged(dateRange);
+          _onSetValue(dateRange);
 
           if (widget.onChanged != null) {
-            widget.onChanged!(time);
+            widget.onChanged!(dateRange);
           }
         }
       },
@@ -391,4 +429,4 @@ class _FormKitTimeFieldState extends State<FormKitTimeField> {
   }
 }
 
-typedef TimeFormatter = String Function(TimeOfDay value);
+typedef DateTimeRangeFormatter = String Function(DateTimeRange value);
