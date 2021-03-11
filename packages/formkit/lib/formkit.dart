@@ -9,6 +9,7 @@ export 'src/fields/formkit_field.dart';
 export 'src/fields/formkit_text_field.dart';
 export 'src/fields/formkit_checkbox_field.dart';
 export 'src/fields/formkit_date_field.dart';
+export 'src/fields/formkit_time_field.dart';
 
 export 'src/validators/formkit_validator.dart';
 export 'src/validators/formkit_validator_composer.dart';

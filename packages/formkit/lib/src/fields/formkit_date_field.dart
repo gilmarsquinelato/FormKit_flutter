@@ -85,7 +85,7 @@ class FormKitDateField extends StatefulWidget {
   ///
   /// If not provided, the [FormKit] value will be used instead,
   /// if [FormKit] don't have a value for this field
-  /// [DateTime.now()] will be used.
+  /// [DateTime.now()] will be used instead.
   final DateTime? initialDate;
 
   /// The [firstDate] is the earliest allowable date.
@@ -179,14 +179,7 @@ class FormKitDateField extends StatefulWidget {
   /// paste and cut will be disabled regardless.
   final ToolbarOptions? toolbarOptions;
 
-  /// {@macro flutter.widgets.editableText.onChanged}
-  ///
-  /// See also:
-  ///
-  ///  * [inputFormatters], which are called before [onChanged]
-  ///    runs and can validate and change ("format") the input value.
-  ///  * [onEditingComplete], [onSubmitted]:
-  ///    which are more specialized input change notifications.
+/// Triggered once the the date is confirmed in the picker dialog
   final ValueChanged<DateTime?>? onChanged;
 
   /// {@macro flutter.widgets.editableText.onAppPrivateCommand}
