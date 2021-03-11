@@ -21,7 +21,6 @@ class FormKitCheckboxField extends StatefulWidget {
     this.validatorTimerMode,
 
     ///#region [ListTile] properties
-    this.leading,
     this.trailing,
     this.title,
     this.subtitle,
@@ -29,7 +28,7 @@ class FormKitCheckboxField extends StatefulWidget {
     this.dense,
     this.shape,
     this.contentPadding,
-    this.enabled = true,
+    this.enabled,
     this.tileColor,
     this.hoverColor = Colors.transparent,
     this.enableFeedback,
@@ -66,10 +65,6 @@ class FormKitCheckboxField extends StatefulWidget {
   final ValidatorTimerMode? validatorTimerMode;
 
   ///#region [ListTile] properties
-  /// A widget to display before the title.
-  ///
-  /// Typically an [Icon] or a [CircleAvatar] widget.
-  final Widget? leading;
 
   /// The primary content of the list tile.
   ///
@@ -167,7 +162,7 @@ class FormKitCheckboxField extends StatefulWidget {
   /// If false, this list tile is styled with the disabled color from the
   /// current [Theme] and the [onTap] and [onLongPress] callbacks are
   /// inoperative.
-  final bool enabled;
+  final bool? enabled;
 
   /// The cursor for a mouse pointer when it enters or is hovering over the
   /// widget.
@@ -277,6 +272,8 @@ class FormKitCheckboxField extends StatefulWidget {
 class _FormKitCheckboxFieldState extends State<FormKitCheckboxField> {
   bool? _value;
 
+  bool get _enabled => widget.enabled ?? FormKit.of(context).widget.enabled;
+
   @override
   void initState() {
     _value = widget.tristate ? null : false;
@@ -314,39 +311,27 @@ class _FormKitCheckboxFieldState extends State<FormKitCheckboxField> {
           onChanged(value);
         };
 
-        final checkbox = _buildCheckbox(handleChange);
-        Widget? leading, trailing;
-        TextDirection textDirection = Directionality.of(context);
-        if (textDirection == TextDirection.ltr) {
-          leading = checkbox;
-          trailing = widget.trailing;
-        } else {
-          leading = widget.leading;
-          trailing = checkbox;
-        }
-
         final theme = Theme.of(context);
         final errorStyle =
             theme.textTheme.caption!.copyWith(color: theme.errorColor);
 
+        final subtitle = validationState.error != null && _enabled
+            ? Text(validationState.error!, style: errorStyle)
+            : widget.subtitle;
+
         return ListTile(
-          onTap: () => handleChange(_getNextValue()),
-          leading: leading,
-          trailing: trailing,
+          onTap: _enabled ? () => handleChange(_getNextValue()) : null,
+          leading: _buildCheckbox(handleChange),
           title: widget.title,
-          subtitle: validationState.error != null
-              ? Text(
-                  validationState.error!,
-                  style: errorStyle,
-                )
-              : widget.subtitle,
+          subtitle: subtitle,
+          enabled: _enabled,
 
           ///#region [ListTile] properties
+          trailing: widget.trailing,
           isThreeLine: widget.isThreeLine,
           dense: widget.dense,
           shape: widget.shape,
           contentPadding: widget.contentPadding,
-          enabled: widget.enabled,
           tileColor: widget.tileColor,
           enableFeedback: widget.enableFeedback,
           horizontalTitleGap: widget.horizontalTitleGap,
@@ -368,11 +353,12 @@ class _FormKitCheckboxFieldState extends State<FormKitCheckboxField> {
   Widget _buildCheckbox(void Function(bool?) onChanged) {
     return Checkbox(
       value: _value,
-      onChanged: onChanged,
+      onChanged: _enabled ? onChanged : null,
 
       ///#region [Checkbox] properties
       mouseCursor: widget.mouseCursor,
       overlayColor: MaterialStateProperty.all(Colors.transparent),
+      activeColor: widget.activeColor,
       fillColor: widget.fillColor,
       checkColor: widget.checkColor,
       tristate: widget.tristate,

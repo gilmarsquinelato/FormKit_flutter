@@ -91,6 +91,7 @@ class FormKit extends StatefulWidget {
     this.validatorTimerMode,
     this.validatorInterval,
     this.onSubmit,
+    this.enabled = true,
   }) : super(key: key);
 
   /// The widget below this widget in the tree.
@@ -101,7 +102,7 @@ class FormKit extends StatefulWidget {
   /// The initial values for each field under this form.
   ///
   /// Where the key is the field name with the reqpective field value as its value.
-  final Map<String, dynamic?>? initialValues;
+  final Map<String, dynamic?> initialValues;
 
   /// Used to enable/disable form fields auto validation and update their error
   /// text.
@@ -137,6 +138,10 @@ class FormKit extends StatefulWidget {
   ///    back button.
   final WillPopCallback? onWillPop;
 
+  /// Enables/disables all children fields
+  /// Possible to override individually in the field
+  final bool enabled;
+
   static FormKitState of(BuildContext context) {
     final scope = context.dependOnInheritedWidgetOfExactType<_FormKitScope>();
     if (scope != null) {
@@ -168,9 +173,7 @@ class FormKitState extends State<FormKit> {
   void initState() {
     super.initState();
 
-    if (widget.initialValues != null) {
-      _values.addAll(widget.initialValues!);
-    }
+    _values.addAll(widget.initialValues);
   }
 
   @override
@@ -334,7 +337,7 @@ class FormKitState extends State<FormKit> {
       return;
     }
 
-    final newValues = widget.initialValues ?? {};
+    final newValues = widget.initialValues;
     final unmodifiedFields =
         _fields.where((field) => !_dirtyFields.contains(field));
 

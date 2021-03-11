@@ -47,6 +47,7 @@ This library is not stable yet!
 - [x] All public interface accessible via context or key
 - [x] Context based access: ```FormKit.of(context)```
 - [x] Key based access
+- [x] Enable/Disable all children fields
 - [x] Initial fields values: `initialValues: {}` -- (`Map<String, dynamic?>()`)
 - [x] Dynamically set the fields value: `FormKit.of(context).setValues({})` or `formKey.currentState.setValues({})`
 - [x] Trigger validation
@@ -55,7 +56,6 @@ This library is not stable yet!
 - [x] Retrieve form values
 - [x] onSubmit callback
 - [x] FormKitSubmitBuilder: [code](./packages/formkit/lib/src/widgets/formkit_submit_builder.dart)
-- [ ] Jump to next field on press enter or tab
 - [x] FormKitShowBuilder: [code](./packages/formkit/lib/src/widgets/formkit_show_builder.dart)
 
 ### To do:

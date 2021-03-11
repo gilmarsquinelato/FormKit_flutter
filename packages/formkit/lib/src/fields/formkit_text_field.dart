@@ -462,10 +462,12 @@ class FormKitTextField extends StatefulWidget {
 }
 
 class _FormKitTextFieldState extends State<FormKitTextField> {
-  final TextEditingController _fallbackController = TextEditingController();
-
+  TextEditingController? _fallbackController;
   TextEditingController get _controller =>
-      widget.controller ?? _fallbackController;
+      widget.controller ?? (_fallbackController ??= TextEditingController());
+
+  bool get _enabled =>
+      widget.enabled ?? FormKit.of(context).widget.enabled;
 
   void onSetValue(String? value) {
     _controller.text = value ?? '';
@@ -487,13 +489,14 @@ class _FormKitTextFieldState extends State<FormKitTextField> {
 
         return TextField(
           controller: _controller,
+          enabled: _enabled,
+          decoration: decoration,
           onChanged: (value) {
             onChanged(value);
             if (widget.onChanged != null) {
               widget.onChanged!(value);
             }
           },
-          decoration: decoration,
 
           ///#region [TextField] properties
           focusNode: widget.focusNode,
@@ -530,7 +533,6 @@ class _FormKitTextFieldState extends State<FormKitTextField> {
           onEditingComplete: widget.onEditingComplete,
           onSubmitted: widget.onSubmitted,
           inputFormatters: widget.inputFormatters,
-          enabled: widget.enabled ?? decoration.enabled,
           cursorWidth: widget.cursorWidth,
           cursorHeight: widget.cursorHeight,
           cursorRadius: widget.cursorRadius,

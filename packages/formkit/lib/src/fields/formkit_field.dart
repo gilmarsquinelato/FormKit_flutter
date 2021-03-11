@@ -29,11 +29,11 @@ class FormKitField<T> extends StatefulWidget {
   const FormKitField({
     Key? key,
     required this.name,
-    required this.builder,
     required this.onSetValue,
-    this.validator,
-    this.validatorInterval,
-    this.validatorTimerMode,
+    required this.validator,
+    required this.validatorInterval,
+    required this.validatorTimerMode,
+    required this.builder,
   }) : super(key: key);
 
   /// {@template formkit.fields.formKitField.name}
@@ -126,7 +126,7 @@ class FormKitFieldState<T> extends State<FormKitField<T>> {
     }
 
     return widget.builder(
-      onChanged,
+      _onChanged,
       _validationState,
     );
   }
@@ -141,7 +141,7 @@ class FormKitFieldState<T> extends State<FormKitField<T>> {
     }
   }
 
-  void onChanged(T? value) {
+  void _onChanged(T? value) {
     final formKit = FormKit.of(context);
 
     formKit.onFieldChanged(this, value);
@@ -211,11 +211,10 @@ class FormKitFieldState<T> extends State<FormKitField<T>> {
     /// Pipe [_validator] to a backpressure stream based on [ValidatorTimerMode]
     /// then performs the validation.
     _validatorSubscription =
-        _getTimerModeStream(_validator!)
-        .listen((value) async {
-          final error = await validate(value);
-          FormKit.of(context).onFieldValidated(name, error);
-        });
+        _getTimerModeStream(_validator!).listen((value) async {
+      final error = await validate(value);
+      FormKit.of(context).onFieldValidated(name, error);
+    });
   }
 
   Stream<T?> _getTimerModeStream(BehaviorSubject<T?> subject) {

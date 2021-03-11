@@ -19,7 +19,8 @@ class LoginForm extends StatelessWidget {
               children: [
                 FormKitTextField(
                   name: 'email',
-                  decoration: InputDecoration(
+                  textInputAction: TextInputAction.next,
+                  decoration: const InputDecoration(
                     labelText: 'Email',
                   ),
                   validator: FormKitValidatorComposer([
@@ -33,7 +34,8 @@ class LoginForm extends StatelessWidget {
                 ),
                 FormKitTextField(
                   name: 'password',
-                  decoration: InputDecoration(
+                  textInputAction: TextInputAction.next,
+                  decoration: const InputDecoration(
                     labelText: 'Password',
                   ),
                   obscureText: true,
@@ -52,9 +54,8 @@ class LoginForm extends StatelessWidget {
                 FormKitCheckboxField(
                   name: 'remember',
                   title: const Text('Remember me'),
-                  validator: FormKitRequiredValidator(
-                    constantErrorMessage('You must be remembered!'),
-                  ),
+                  horizontalTitleGap: 0,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 0),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
