@@ -33,7 +33,7 @@ This library is not stable yet!
 ### Form fields
 
 - [x] Custom user defined field: [code](./packages/formkit/lib/src/fields/formkit_field.dart)
-- [ ] Material Fields
+- [-] Material Fields
 - - [x] Text Field: [code](./packages/formkit/lib/src/fields/formkit_text_field.dart)
 - - [x] Checkbox Field: [code](./packages/formkit/lib/src/fields/formkit_checkbox_field.dart)
 - - [x] Date Field: [code](./packages/formkit/lib/src/fields/formkit_date_field.dart)
