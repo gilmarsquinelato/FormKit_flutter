@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:formkit/formkit.dart';
 
-/// FormKit material [Checkbox] field wrapper
+/// FormKit material [Switch] field wrapper
 ///
 /// {@tool snippet}
 /// ```dart
-/// FormKitCheckboxField(
+/// FormKitSwitchField(
 ///   name: 'fieldName',
 ///   title: 'Label',
 /// )
 /// ```
 /// {@end-tool}
-class FormKitCheckboxField extends StatefulWidget {
-  const FormKitCheckboxField({
+class FormKitSwitchField extends StatefulWidget {
+  const FormKitSwitchField({
     Key? key,
     required this.name,
     this.validator,
@@ -39,16 +39,24 @@ class FormKitCheckboxField extends StatefulWidget {
 
     ///#endregion
 
-    ///#region [Checkbox] properties
+    ///#region [Switch] properties
     this.mouseCursor,
     this.activeColor,
-    this.fillColor,
-    this.checkColor,
-    this.tristate = false,
     this.visualDensity,
     this.focusColor,
     this.focusNode,
     this.autofocus = false,
+    this.activeTrackColor,
+    this.inactiveThumbColor,
+    this.inactiveTrackColor,
+    this.activeThumbImage,
+    this.onActiveThumbImageError,
+    this.inactiveThumbImage,
+    this.onInactiveThumbImageError,
+    this.thumbColor,
+    this.trackColor,
+    this.materialTapTargetSize,
+    this.overlayColor,
 
     ///#endregion
   }) : super(key: key);
@@ -57,7 +65,7 @@ class FormKitCheckboxField extends StatefulWidget {
   final String name;
 
   /// {@macro formkit.fields.formKitField.validator}
-  final FormKitValidator<bool?>? validator;
+  final FormKitValidator<bool>? validator;
 
   /// {@macro formkit.fields.formKitField.validatorInterval}
   final Duration? validatorInterval;
@@ -65,8 +73,7 @@ class FormKitCheckboxField extends StatefulWidget {
   /// {@macro formkit.fields.formKitField.validatorTimerMode}
   final ValidatorTimerMode? validatorTimerMode;
 
-  /// Triggered once the value is changed
-  final ValueChanged<bool?>? onChanged;
+  final ValueChanged<bool>? onChanged;
 
   ///#region [ListTile] properties
 
@@ -230,85 +237,165 @@ class FormKitCheckboxField extends StatefulWidget {
 
   ///#endregion
 
-  ///#region [Checkbox] properties
-  /// The color to use when this checkbox is checked.
+  ///#region [Switch] properties
+
+  /// The color to use when this switch is on.
   ///
   /// Defaults to [ThemeData.toggleableActiveColor].
   ///
-  /// If [fillColor] returns a non-null color in the [MaterialState.selected]
+  /// If [thumbColor] returns a non-null color in the [MaterialState.selected]
   /// state, it will be used instead of this color.
   final Color? activeColor;
 
-  /// {@macro flutter.material.checkbox.fillColor}
+  /// The color to use on the track when this switch is on.
+  ///
+  /// Defaults to [ThemeData.toggleableActiveColor] with the opacity set at 50%.
+  ///
+  /// Ignored if this switch is created with [Switch.adaptive].
+  ///
+  /// If [trackColor] returns a non-null color in the [MaterialState.selected]
+  /// state, it will be used instead of this color.
+  final Color? activeTrackColor;
+
+  /// The color to use on the thumb when this switch is off.
+  ///
+  /// Defaults to the colors described in the Material design specification.
+  ///
+  /// Ignored if this switch is created with [Switch.adaptive].
+  ///
+  /// If [thumbColor] returns a non-null color in the default state, it will be
+  /// used instead of this color.
+  final Color? inactiveThumbColor;
+
+  /// The color to use on the track when this switch is off.
+  ///
+  /// Defaults to the colors described in the Material design specification.
+  ///
+  /// Ignored if this switch is created with [Switch.adaptive].
+  ///
+  /// If [trackColor] returns a non-null color in the default state, it will be
+  /// used instead of this color.
+  final Color? inactiveTrackColor;
+
+  /// An image to use on the thumb of this switch when the switch is on.
+  ///
+  /// Ignored if this switch is created with [Switch.adaptive].
+  final ImageProvider? activeThumbImage;
+
+  /// An optional error callback for errors emitted when loading
+  /// [activeThumbImage].
+  final ImageErrorListener? onActiveThumbImageError;
+
+  /// An image to use on the thumb of this switch when the switch is off.
+  ///
+  /// Ignored if this switch is created with [Switch.adaptive].
+  final ImageProvider? inactiveThumbImage;
+
+  /// An optional error callback for errors emitted when loading
+  /// [inactiveThumbImage].
+  final ImageErrorListener? onInactiveThumbImageError;
+
+  /// {@template flutter.material.switch.thumbColor}
+  /// The color of this [Switch]'s thumb.
+  ///
+  /// Resolved in the following states:
+  ///  * [MaterialState.selected].
+  ///  * [MaterialState.hovered].
+  ///  * [MaterialState.focused].
+  ///  * [MaterialState.disabled].
+  /// {@endtemplate}
   ///
   /// If null, then the value of [activeColor] is used in the selected
-  /// state. If that is also null, the value of [CheckboxThemeData.fillColor]
-  /// is used. If that is also null, then [ThemeData.disabledColor] is used in
-  /// the disabled state, [ThemeData.toggleableActiveColor] is used in the
-  /// selected state, and [ThemeData.unselectedWidgetColor] is used in the
-  /// default state.
-  final MaterialStateProperty<Color?>? fillColor;
+  /// state and [inactiveThumbColor] in the default state. If that is also null,
+  /// then the value of [SwitchThemeData.thumbColor] is used. If that is also
+  /// null, then the following colors are used:
+  ///
+  /// | State    | Light theme                       | Dark theme                        |
+  /// |----------|-----------------------------------|-----------------------------------|
+  /// | Default  | `Colors.grey.shade50`             | `Colors.grey.shade400`            |
+  /// | Selected | [ThemeData.toggleableActiveColor] | [ThemeData.toggleableActiveColor] |
+  /// | Disabled | `Colors.grey.shade400`            | `Colors.grey.shade800`            |
+  final MaterialStateProperty<Color?>? thumbColor;
 
-  /// {@macro flutter.material.checkbox.checkColor}
+  /// {@template flutter.material.switch.trackColor}
+  /// The color of this [Switch]'s track.
   ///
-  /// If null, then the value of [CheckboxThemeData.checkColor] is used. If
-  /// that is also null, then Color(0xFFFFFFFF) is used.
-  final Color? checkColor;
+  /// Resolved in the following states:
+  ///  * [MaterialState.selected].
+  ///  * [MaterialState.hovered].
+  ///  * [MaterialState.focused].
+  ///  * [MaterialState.disabled].
+  /// {@endtemplate}
+  ///
+  /// If null, then the value of [activeTrackColor] is used in the selected
+  /// state and [inactiveTrackColor] in the default state. If that is also null,
+  /// then the value of [SwitchThemeData.trackColor] is used. If that is also
+  /// null, then the following colors are used:
+  ///
+  /// | State    | Light theme                     | Dark theme                      |
+  /// |----------|---------------------------------|---------------------------------|
+  /// | Default  | `Colors.grey.shade50`           | `Colors.grey.shade400`          |
+  /// | Selected | [activeColor] with alpha `0x80` | [activeColor] with alpha `0x80` |
+  /// | Disabled | `Color(0x52000000)`             | `Colors.white30`                |
+  final MaterialStateProperty<Color?>? trackColor;
 
-  /// If true the checkbox's [value] can be true, false, or null.
+  /// {@template flutter.material.switch.materialTapTargetSize}
+  /// Configures the minimum size of the tap target.
+  /// {@endtemplate}
   ///
-  /// Checkbox displays a dash when its value is null.
+  /// If null, then the value of [SwitchThemeData.materialTapTargetSize] is
+  /// used. If that is also null, then the value of
+  /// [ThemeData.materialTapTargetSize] is used.
   ///
-  /// When a tri-state checkbox ([tristate] is true) is tapped, its [onChanged]
-  /// callback will be applied to true if the current value is false, to null if
-  /// value is true, and to false if value is null (i.e. it cycles through false
-  /// => true => null => false when tapped).
+  /// See also:
   ///
-  /// If tristate is false (the default), [value] must not be null.
-  final bool tristate;
+  ///  * [MaterialTapTargetSize], for a description of how this affects tap targets.
+  final MaterialTapTargetSize? materialTapTargetSize;
+
+  /// {@template flutter.material.switch.overlayColor}
+  /// The color for the switch's [Material].
+  ///
+  /// Resolves in the following states:
+  ///  * [MaterialState.pressed].
+  ///  * [MaterialState.selected].
+  ///  * [MaterialState.hovered].
+  ///  * [MaterialState.focused].
+  /// {@endtemplate}
+  ///
+  /// If null, then the value of [activeColor] with alpha
+  /// [kRadialReactionAlpha], [focusColor] and [hoverColor] is used in the
+  /// pressed, focused and hovered state. If that is also null,
+  /// the value of [SwitchThemeData.overlayColor] is used. If that is
+  /// also null, then the value of [ThemeData.toggleableActiveColor] with alpha
+  /// [kRadialReactionAlpha], [ThemeData.focusColor] and [ThemeData.hoverColor]
+  /// is used in the pressed, focused and hovered state.
+  final MaterialStateProperty<Color?>? overlayColor;
 
   ///#endregion
 
   @override
-  _FormKitCheckboxFieldState createState() => _FormKitCheckboxFieldState();
+  _FormKitSwitchFieldState createState() => _FormKitSwitchFieldState();
 }
 
-class _FormKitCheckboxFieldState extends State<FormKitCheckboxField> {
-  bool? _value;
+class _FormKitSwitchFieldState extends State<FormKitSwitchField> {
+  bool _value = false;
 
   bool get _enabled => widget.enabled ?? FormKit.of(context).widget.enabled;
 
-  @override
-  void initState() {
-    _value = widget.tristate ? null : false;
-    super.initState();
-  }
-
   void _setValue(bool? value) {
-    _value = value == null && !widget.tristate ? false : value;
-  }
-
-  bool? _getNextValue() {
-    switch (_value) {
-      case false:
-        return true;
-      case true:
-        return widget.tristate ? null : false;
-      case null:
-        return false;
-    }
+    _value = value == null ? false : value;
   }
 
   @override
   Widget build(BuildContext context) {
-    return FormKitField<bool?>(
+    return FormKitField<bool>(
       name: widget.name,
       validator: widget.validator,
       validatorInterval: widget.validatorInterval,
       validatorTimerMode: widget.validatorTimerMode,
       onSetValue: _setValue,
       builder: (onChanged, validationState) {
-        final handleChange = (bool? value) {
+        final handleChange = (bool value) {
           setState(() {
             _setValue(value);
           });
@@ -327,8 +414,8 @@ class _FormKitCheckboxFieldState extends State<FormKitCheckboxField> {
             : widget.subtitle;
 
         return ListTile(
-          onTap: _enabled ? () => handleChange(_getNextValue()) : null,
-          leading: _buildCheckbox(handleChange),
+          onTap: _enabled ? () => handleChange(!_value) : null,
+          leading: _buildSwitch(handleChange),
           title: widget.title,
           subtitle: subtitle,
           enabled: _enabled,
@@ -357,20 +444,26 @@ class _FormKitCheckboxFieldState extends State<FormKitCheckboxField> {
     );
   }
 
-  Widget _buildCheckbox(void Function(bool?) onChanged) {
-    return Checkbox(
+  Widget _buildSwitch(void Function(bool) onChanged) {
+    return Switch(
       value: _value,
       onChanged: _enabled ? onChanged : null,
 
-      ///#region [Checkbox] properties
+      ///#region [Switch] properties
       mouseCursor: widget.mouseCursor,
       overlayColor: MaterialStateProperty.all(Colors.transparent),
       activeColor: widget.activeColor,
-      fillColor: widget.fillColor,
-      checkColor: widget.checkColor,
-      tristate: widget.tristate,
-      visualDensity: widget.visualDensity,
-
+      focusColor: widget.focusColor,
+      activeTrackColor: widget.activeTrackColor,
+      inactiveThumbColor: widget.inactiveThumbColor,
+      inactiveTrackColor: widget.inactiveTrackColor,
+      activeThumbImage: widget.activeThumbImage,
+      onActiveThumbImageError: widget.onActiveThumbImageError,
+      inactiveThumbImage: widget.inactiveThumbImage,
+      onInactiveThumbImageError: widget.onInactiveThumbImageError,
+      thumbColor: widget.thumbColor,
+      trackColor: widget.trackColor,
+      materialTapTargetSize: widget.materialTapTargetSize,
       ///#endregion
     );
   }

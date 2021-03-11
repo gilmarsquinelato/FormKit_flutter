@@ -2,54 +2,58 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:formkit/formkit.dart';
 
-/// FormKit material [Checkbox] field wrapper
+/// FormKit material [Radio] field wrapper
 ///
 /// {@tool snippet}
 /// ```dart
-/// FormKitCheckboxField(
-///   name: 'fieldName',
-///   title: 'Label',
+/// enum Option {
+///   opt1,
+///   opt2,
+///   opt3,
+/// }
+///
+/// FormKitRadioField(
+///   name: 'radio',
+///   options: {
+///     Option.opt1: Text('Option 1'),
+///     Option.opt2: Text('Option 2'),
+///     Option.opt3: Text('Option 3'),
+///   },
 /// )
 /// ```
 /// {@end-tool}
-class FormKitCheckboxField extends StatefulWidget {
-  const FormKitCheckboxField({
+class FormKitRadioField<T> extends StatefulWidget {
+  const FormKitRadioField({
     Key? key,
     required this.name,
+    required this.options,
     this.validator,
     this.validatorInterval,
     this.validatorTimerMode,
     this.onChanged,
 
     ///#region [ListTile] properties
-    this.trailing,
-    this.title,
-    this.subtitle,
-    this.isThreeLine = false,
     this.dense,
     this.shape,
     this.contentPadding,
     this.enabled,
     this.tileColor,
+    this.focusColor,
+    this.focusNode,
     this.hoverColor = Colors.transparent,
     this.enableFeedback,
     this.horizontalTitleGap,
     this.minVerticalPadding,
     this.minLeadingWidth,
+    this.autofocus = false,
+    this.mouseCursor,
+    this.visualDensity,
 
     ///#endregion
 
-    ///#region [Checkbox] properties
-    this.mouseCursor,
+    ///#region [Radio] properties
     this.activeColor,
     this.fillColor,
-    this.checkColor,
-    this.tristate = false,
-    this.visualDensity,
-    this.focusColor,
-    this.focusNode,
-    this.autofocus = false,
-
     ///#endregion
   }) : super(key: key);
 
@@ -57,7 +61,7 @@ class FormKitCheckboxField extends StatefulWidget {
   final String name;
 
   /// {@macro formkit.fields.formKitField.validator}
-  final FormKitValidator<bool?>? validator;
+  final FormKitValidator<T?>? validator;
 
   /// {@macro formkit.fields.formKitField.validatorInterval}
   final Duration? validatorInterval;
@@ -66,66 +70,15 @@ class FormKitCheckboxField extends StatefulWidget {
   final ValidatorTimerMode? validatorTimerMode;
 
   /// Triggered once the value is changed
-  final ValueChanged<bool?>? onChanged;
+  final ValueChanged<T?>? onChanged;
+
+  /// The available options
+  ///
+  /// Where the key will be the value once selected,
+  /// and the value is the option label
+  final Map<T, Widget> options;
 
   ///#region [ListTile] properties
-
-  /// The primary content of the list tile.
-  ///
-  /// Typically a [Text] widget.
-  ///
-  /// This should not wrap. To enforce the single line limit, use
-  /// [Text.maxLines].
-  final Widget? title;
-
-  /// Additional content displayed below the title.
-  ///
-  /// Typically a [Text] widget.
-  ///
-  /// If [isThreeLine] is false, this should not wrap.
-  ///
-  /// If [isThreeLine] is true, this should be configured to take a maximum of
-  /// two lines. For example, you can use [Text.maxLines] to enforce the number
-  /// of lines.
-  ///
-  /// The subtitle's default [TextStyle] depends on [TextTheme.bodyText2] except
-  /// [TextStyle.color]. The [TextStyle.color] depends on the value of [enabled]
-  /// and [selected].
-  ///
-  /// When [enabled] is false, the text color is set to [ThemeData.disabledColor].
-  ///
-  /// When [selected] is true, the text color is set to [ListTileTheme.selectedColor]
-  /// if it's not null. If [ListTileTheme.selectedColor] is null, the text color
-  /// is set to [ThemeData.primaryColor] when [ThemeData.brightness] is
-  /// [Brightness.light] and to [ThemeData.accentColor] when it is [Brightness.dark].
-  ///
-  /// When [selected] is false, the text color is set to [ListTileTheme.textColor]
-  /// if it's not null and to [TextTheme.caption]'s color if [ListTileTheme.textColor]
-  /// is null.
-  final Widget? subtitle;
-
-  /// A widget to display after the title.
-  ///
-  /// Typically an [Icon] widget.
-  ///
-  /// To show right-aligned metadata (assuming left-to-right reading order;
-  /// left-aligned for right-to-left reading order), consider using a [Row] with
-  /// [CrossAxisAlignment.baseline] alignment whose first item is [Expanded] and
-  /// whose second child is the metadata text, instead of using the [trailing]
-  /// property.
-  final Widget? trailing;
-
-  /// Whether this list tile is intended to display three lines of text.
-  ///
-  /// If true, then [subtitle] must be non-null (since it is expected to give
-  /// the second and third lines of text).
-  ///
-  /// If false, the list tile is treated as having one line if the subtitle is
-  /// null and treated as having two lines if the subtitle is non-null.
-  ///
-  /// When using a [Text] widget for [title] and [subtitle], you can enforce
-  /// line limits using [Text.maxLines].
-  final bool isThreeLine;
 
   /// Whether this list tile is part of a vertically dense list.
   ///
@@ -230,8 +183,9 @@ class FormKitCheckboxField extends StatefulWidget {
 
   ///#endregion
 
-  ///#region [Checkbox] properties
-  /// The color to use when this checkbox is checked.
+  ///#region [Radio] properties
+
+  /// The color to use when this radio button is selected.
   ///
   /// Defaults to [ThemeData.toggleableActiveColor].
   ///
@@ -239,76 +193,49 @@ class FormKitCheckboxField extends StatefulWidget {
   /// state, it will be used instead of this color.
   final Color? activeColor;
 
-  /// {@macro flutter.material.checkbox.fillColor}
+  /// {@template flutter.material.radio.fillColor}
+  /// The color that fills the radio button, in all [MaterialState]s.
   ///
-  /// If null, then the value of [activeColor] is used in the selected
-  /// state. If that is also null, the value of [CheckboxThemeData.fillColor]
-  /// is used. If that is also null, then [ThemeData.disabledColor] is used in
+  /// Resolves in the following states:
+  ///  * [MaterialState.selected].
+  ///  * [MaterialState.hovered].
+  ///  * [MaterialState.focused].
+  ///  * [MaterialState.disabled].
+  /// {@endtemplate}
+  ///
+  /// If null, then the value of [activeColor] is used in the selected state. If
+  /// that is also null, then the value of [RadioThemeData.fillColor] is used.
+  /// If that is also null, then [ThemeData.disabledColor] is used in
   /// the disabled state, [ThemeData.toggleableActiveColor] is used in the
   /// selected state, and [ThemeData.unselectedWidgetColor] is used in the
   /// default state.
   final MaterialStateProperty<Color?>? fillColor;
 
-  /// {@macro flutter.material.checkbox.checkColor}
-  ///
-  /// If null, then the value of [CheckboxThemeData.checkColor] is used. If
-  /// that is also null, then Color(0xFFFFFFFF) is used.
-  final Color? checkColor;
-
-  /// If true the checkbox's [value] can be true, false, or null.
-  ///
-  /// Checkbox displays a dash when its value is null.
-  ///
-  /// When a tri-state checkbox ([tristate] is true) is tapped, its [onChanged]
-  /// callback will be applied to true if the current value is false, to null if
-  /// value is true, and to false if value is null (i.e. it cycles through false
-  /// => true => null => false when tapped).
-  ///
-  /// If tristate is false (the default), [value] must not be null.
-  final bool tristate;
-
   ///#endregion
 
   @override
-  _FormKitCheckboxFieldState createState() => _FormKitCheckboxFieldState();
+  _FormKitRadioFieldState<T> createState() => _FormKitRadioFieldState<T>();
 }
 
-class _FormKitCheckboxFieldState extends State<FormKitCheckboxField> {
-  bool? _value;
+class _FormKitRadioFieldState<T> extends State<FormKitRadioField<T>> {
+  T? _value;
 
   bool get _enabled => widget.enabled ?? FormKit.of(context).widget.enabled;
 
-  @override
-  void initState() {
-    _value = widget.tristate ? null : false;
-    super.initState();
-  }
-
-  void _setValue(bool? value) {
-    _value = value == null && !widget.tristate ? false : value;
-  }
-
-  bool? _getNextValue() {
-    switch (_value) {
-      case false:
-        return true;
-      case true:
-        return widget.tristate ? null : false;
-      case null:
-        return false;
-    }
+  void _setValue(T? value) {
+    _value = value;
   }
 
   @override
   Widget build(BuildContext context) {
-    return FormKitField<bool?>(
+    return FormKitField<T?>(
       name: widget.name,
       validator: widget.validator,
       validatorInterval: widget.validatorInterval,
       validatorTimerMode: widget.validatorTimerMode,
       onSetValue: _setValue,
       builder: (onChanged, validationState) {
-        final handleChange = (bool? value) {
+        final handleChange = (T? value) {
           setState(() {
             _setValue(value);
           });
@@ -322,53 +249,80 @@ class _FormKitCheckboxFieldState extends State<FormKitCheckboxField> {
         final errorStyle =
             theme.textTheme.caption!.copyWith(color: theme.errorColor);
 
-        final subtitle = validationState.error != null && _enabled
-            ? Text(validationState.error!, style: errorStyle)
-            : widget.subtitle;
+        final hasError = validationState.error != null && _enabled;
+        final subtitle =
+            hasError ? Text(validationState.error!, style: errorStyle) : null;
 
-        return ListTile(
-          onTap: _enabled ? () => handleChange(_getNextValue()) : null,
-          leading: _buildCheckbox(handleChange),
-          title: widget.title,
-          subtitle: subtitle,
-          enabled: _enabled,
+        final options = widget.options.entries
+            .map(
+              (entry) => _buildItem(
+                entry.key,
+                entry.value,
+                handleChange,
+                hasError,
+                subtitle,
+              ),
+            )
+            .toList();
 
-          ///#region [ListTile] properties
-          trailing: widget.trailing,
-          isThreeLine: widget.isThreeLine,
-          dense: widget.dense,
-          shape: widget.shape,
-          contentPadding: widget.contentPadding,
-          tileColor: widget.tileColor,
-          enableFeedback: widget.enableFeedback,
-          horizontalTitleGap: widget.horizontalTitleGap,
-          minVerticalPadding: widget.minVerticalPadding,
-          minLeadingWidth: widget.minLeadingWidth,
-          visualDensity: widget.visualDensity,
-          focusNode: widget.focusNode,
-          focusColor: widget.focusColor,
-          hoverColor: widget.hoverColor,
-          mouseCursor: widget.mouseCursor,
-          autofocus: widget.autofocus,
-
-          ///#endregion
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: options,
         );
       },
     );
   }
 
-  Widget _buildCheckbox(void Function(bool?) onChanged) {
-    return Checkbox(
-      value: _value,
+  Widget _buildItem(
+    T value,
+    Widget label,
+    void Function(T?) onChanged,
+    bool hasError,
+    Widget? subtitle,
+  ) {
+    return ListTile(
+      onTap: _enabled ? () => onChanged(value) : null,
+      leading: _buildRadio(value, onChanged),
+      title: label,
+      enabled: _enabled,
+      subtitle: _value == value && hasError ? subtitle : null,
+
+      ///#region [ListTile] properties
+      dense: widget.dense,
+      shape: widget.shape,
+      contentPadding: widget.contentPadding,
+      tileColor: widget.tileColor,
+      enableFeedback: widget.enableFeedback,
+      horizontalTitleGap: widget.horizontalTitleGap,
+      minVerticalPadding: widget.minVerticalPadding,
+      minLeadingWidth: widget.minLeadingWidth,
+      visualDensity: widget.visualDensity,
+      focusNode: widget.focusNode,
+      focusColor: widget.focusColor,
+      hoverColor: widget.hoverColor,
+      mouseCursor: widget.mouseCursor,
+      autofocus: widget.autofocus,
+
+      ///#endregion
+    );
+  }
+
+  Widget _buildRadio(
+    T value,
+    void Function(T?) onChanged,
+  ) {
+    return Radio(
+      value: value,
+      groupValue: _value,
       onChanged: _enabled ? onChanged : null,
 
-      ///#region [Checkbox] properties
+      ///#region [Radio] properties
       mouseCursor: widget.mouseCursor,
       overlayColor: MaterialStateProperty.all(Colors.transparent),
       activeColor: widget.activeColor,
       fillColor: widget.fillColor,
-      checkColor: widget.checkColor,
-      tristate: widget.tristate,
+      focusColor: widget.focusColor,
       visualDensity: widget.visualDensity,
 
       ///#endregion

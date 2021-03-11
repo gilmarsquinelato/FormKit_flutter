@@ -12,6 +12,7 @@ export 'src/fields/formkit_switch_field.dart';
 export 'src/fields/formkit_date_field.dart';
 export 'src/fields/formkit_daterange_field.dart';
 export 'src/fields/formkit_time_field.dart';
+export 'src/fields/formkit_radio_field.dart';
 
 export 'src/validators/formkit_validator.dart';
 export 'src/validators/formkit_validator_composer.dart';

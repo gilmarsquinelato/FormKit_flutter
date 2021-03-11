@@ -185,7 +185,7 @@ class FormKitDateField extends StatefulWidget {
   /// paste and cut will be disabled regardless.
   final ToolbarOptions? toolbarOptions;
 
-  /// Triggered once the the date is confirmed in the picker dialog
+  /// Triggered once the date is confirmed in the picker dialog
   final ValueChanged<DateTime?>? onChanged;
 
   /// {@macro flutter.widgets.editableText.onAppPrivateCommand}

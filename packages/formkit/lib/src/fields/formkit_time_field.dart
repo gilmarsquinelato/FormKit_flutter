@@ -167,7 +167,7 @@ class FormKitTimeField extends StatefulWidget {
   /// paste and cut will be disabled regardless.
   final ToolbarOptions? toolbarOptions;
 
-  /// Triggered once the the time is confirmed in the picker dialog
+  /// Triggered once the time is confirmed in the picker dialog
   final ValueChanged<TimeOfDay?>? onChanged;
 
   /// {@macro flutter.widgets.editableText.onAppPrivateCommand}
