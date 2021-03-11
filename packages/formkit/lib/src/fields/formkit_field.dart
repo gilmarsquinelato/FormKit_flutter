@@ -231,6 +231,9 @@ class FormKitFieldState<T> extends State<FormKitField<T>> {
 
 typedef FormKitFieldBuilder<T> = Widget Function(
   /// When the field has changed its value.
+  ///
+  /// This function doesn't trigger the [onSetValue] callback,
+  /// making necessary to change the value internally as well.
   ValueChanged<T> onChanged,
 
   /// The current validation state.

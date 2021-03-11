@@ -1,4 +1,5 @@
 import 'package:example/login_form.dart';
+import 'package:example/signup_form.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -31,9 +32,15 @@ class ExamplesCatalog extends StatelessWidget {
             title: const Text('Select one of the examples below'),
           ),
           ListTile(
-            title: const Text('Basic form (Login Form)'),
+            title: const Text('Login Form'),
             onTap: () => Navigator.of(context).push(MaterialPageRoute(
               builder: (_) => LoginForm(),
+            )),
+          ),
+          ListTile(
+            title: const Text('Signup Form'),
+            onTap: () => Navigator.of(context).push(MaterialPageRoute(
+              builder: (_) => SignupForm(),
             )),
           ),
         ],

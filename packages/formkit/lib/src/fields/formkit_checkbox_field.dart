@@ -19,6 +19,7 @@ class FormKitCheckboxField extends StatefulWidget {
     this.validator,
     this.validatorInterval,
     this.validatorTimerMode,
+    this.onChanged,
 
     ///#region [ListTile] properties
     this.trailing,
@@ -63,6 +64,8 @@ class FormKitCheckboxField extends StatefulWidget {
 
   /// {@macro formkit.fields.formKitField.validatorTimerMode}
   final ValidatorTimerMode? validatorTimerMode;
+
+  final ValueChanged<bool?>? onChanged;
 
   ///#region [ListTile] properties
 
@@ -309,6 +312,9 @@ class _FormKitCheckboxFieldState extends State<FormKitCheckboxField> {
             _setValue(value);
           });
           onChanged(value);
+          if (widget.onChanged != null) {
+            widget.onChanged!(value);
+          }
         };
 
         final theme = Theme.of(context);

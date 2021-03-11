@@ -33,14 +33,15 @@ This library is not stable yet!
 ### Form fields
 
 - [x] Custom user defined field: [code](./packages/formkit/lib/src/fields/formkit_field.dart)
-- [x] Text Field: [code](./packages/formkit/lib/src/fields/formkit_text_field.dart)
-- [x] Checkbox Field: [code](./packages/formkit/lib/src/fields/formkit_checkbox_field.dart)
-- [ ] Date Field
-- [ ] Time Field
-- [ ] DateTime Field
-- [ ] Radio Field
-- [ ] Slider Field
-- [ ] Switch Field
+- Material Fields
+- - [x] Text Field: [code](./packages/formkit/lib/src/fields/formkit_text_field.dart)
+- - [x] Checkbox Field: [code](./packages/formkit/lib/src/fields/formkit_checkbox_field.dart)
+- - [x] Date Field
+- - [ ] Time Field
+- - [ ] DateTime Field
+- - [ ] Radio Field
+- - [ ] Slider Field
+- - [ ] Switch Field
 
 ### Form
 

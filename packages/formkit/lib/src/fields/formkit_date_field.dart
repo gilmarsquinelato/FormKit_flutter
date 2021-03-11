@@ -1,81 +1,59 @@
-import 'dart:ui' as ui show BoxHeightStyle, BoxWidthStyle;
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:formkit/formkit.dart';
 
-/// FormKit material [TextField] field wrapper
+/// FormKit material Date picker field
+///
+/// It's a readonly [TextField] with a calendar icon button
 ///
 /// {@tool snippet}
 /// ```dart
-/// FormKitTextField(
-///   name: 'email',
-///   decoration: InputDecoration(
-///     labelText: 'Email',
-///   )
+/// FormKitDateField(
+///   name: 'birthDate',
+///   decoration: const InputDecoration(
+///     labelText: 'Birth date',
+///   ),
+///   firstDate: DateTime(1900),
+///   lastDate: DateTime.now(),
 /// )
 /// ```
 /// {@end-tool}
-class FormKitTextField extends StatefulWidget {
-  FormKitTextField({
+class FormKitDateField extends StatefulWidget {
+  const FormKitDateField({
     Key? key,
     required this.name,
     this.validator,
     this.validatorInterval,
     this.validatorTimerMode,
+    this.enabled,
+    this.decoration = const InputDecoration(),
+    this.calendarIcon = const Icon(Icons.calendar_today),
+    this.initialDate,
+    required this.firstDate,
+    required this.lastDate,
+    this.dateFormatter,
 
     ///#region [TextField] properties
     this.controller,
     this.focusNode,
-    this.decoration = const InputDecoration(),
-    this.keyboardType,
-    this.textInputAction,
-    this.textCapitalization = TextCapitalization.none,
     this.style,
     this.strutStyle,
     this.textAlign = TextAlign.start,
     this.textAlignVertical,
     this.textDirection,
-    this.readOnly = false,
     this.toolbarOptions,
-    this.showCursor,
     this.autofocus = false,
-    this.obscuringCharacter = '•',
-    this.obscureText = false,
-    this.autocorrect = true,
-    this.smartDashesType,
-    this.smartQuotesType,
-    this.enableSuggestions = true,
-    this.maxLines = 1,
-    this.minLines,
-    this.expands = false,
-    this.maxLength,
-    this.maxLengthEnforcement,
     this.onChanged,
-    this.onEditingComplete,
-    this.onSubmitted,
     this.onAppPrivateCommand,
-    this.inputFormatters,
-    this.enabled,
-    this.cursorWidth = 2.0,
-    this.cursorHeight,
-    this.cursorRadius,
-    this.cursorColor,
-    this.selectionHeightStyle = ui.BoxHeightStyle.tight,
-    this.selectionWidthStyle = ui.BoxWidthStyle.tight,
-    this.keyboardAppearance,
     this.scrollPadding = const EdgeInsets.all(20.0),
     this.dragStartBehavior = DragStartBehavior.start,
     this.enableInteractiveSelection = true,
     this.selectionControls,
-    this.onTap,
     this.mouseCursor,
     this.buildCounter,
     this.scrollController,
     this.scrollPhysics,
-    this.autofillHints,
     this.restorationId,
 
     ///#endregion
@@ -85,13 +63,36 @@ class FormKitTextField extends StatefulWidget {
   final String name;
 
   /// {@macro formkit.fields.formKitField.validator}
-  final FormKitValidator<String>? validator;
+  final FormKitValidator<DateTime?>? validator;
 
   /// {@macro formkit.fields.formKitField.validatorInterval}
   final Duration? validatorInterval;
 
   /// {@macro formkit.fields.formKitField.validatorTimerMode}
   final ValidatorTimerMode? validatorTimerMode;
+
+  /// The Icon that will be used in the calendar button
+  final Icon calendarIcon;
+
+  /// The date formatter to be used while displaying the value
+  ///
+  /// By default the field will use [MaterialLocalizations.formatCompactDate].
+  final DateFormatter? dateFormatter;
+
+  /// [initialDate] must either fall between [firstDate] and [lastDate],
+  /// or be equal to one of them. For each of these [DateTime] parameters, only
+  /// their dates are considered. Their time fields are ignored.
+  ///
+  /// If not provided, the [FormKit] value will be used instead,
+  /// if [FormKit] don't have a value for this field
+  /// [DateTime.now()] will be used.
+  final DateTime? initialDate;
+
+  /// The [firstDate] is the earliest allowable date.
+  final DateTime firstDate;
+
+  /// The [lastDate] is the latest allowable date.
+  final DateTime lastDate;
 
   ///#region [TextField] properties
 
@@ -149,18 +150,6 @@ class FormKitTextField extends StatefulWidget {
   /// extra padding introduced by the decoration to save space for the labels).
   final InputDecoration decoration;
 
-  /// {@macro flutter.widgets.editableText.keyboardType}
-  final TextInputType? keyboardType;
-
-  /// The type of action button to use for the keyboard.
-  ///
-  /// Defaults to [TextInputAction.newline] if [keyboardType] is
-  /// [TextInputType.multiline] and [TextInputAction.done] otherwise.
-  final TextInputAction? textInputAction;
-
-  /// {@macro flutter.widgets.editableText.textCapitalization}
-  final TextCapitalization textCapitalization;
-
   /// The style to use for the text being edited.
   ///
   /// This text style is also used as the base style for the [decoration].
@@ -183,87 +172,12 @@ class FormKitTextField extends StatefulWidget {
   /// {@macro flutter.widgets.editableText.autofocus}
   final bool autofocus;
 
-  /// {@macro flutter.widgets.editableText.obscuringCharacter}
-  final String obscuringCharacter;
-
-  /// {@macro flutter.widgets.editableText.obscureText}
-  final bool obscureText;
-
-  /// {@macro flutter.widgets.editableText.autocorrect}
-  final bool autocorrect;
-
-  /// {@macro flutter.services.TextInputConfiguration.smartDashesType}
-  final SmartDashesType? smartDashesType;
-
-  /// {@macro flutter.services.TextInputConfiguration.smartQuotesType}
-  final SmartQuotesType? smartQuotesType;
-
-  /// {@macro flutter.services.TextInputConfiguration.enableSuggestions}
-  final bool enableSuggestions;
-
-  /// {@macro flutter.widgets.editableText.maxLines}
-  final int maxLines;
-
-  /// {@macro flutter.widgets.editableText.minLines}
-  final int? minLines;
-
-  /// {@macro flutter.widgets.editableText.expands}
-  final bool expands;
-
-  /// {@macro flutter.widgets.editableText.readOnly}
-  final bool readOnly;
-
   /// Configuration of toolbar options.
   ///
   /// If not set, select all and paste will default to be enabled. Copy and cut
   /// will be disabled if [obscureText] is true. If [readOnly] is true,
   /// paste and cut will be disabled regardless.
   final ToolbarOptions? toolbarOptions;
-
-  /// {@macro flutter.widgets.editableText.showCursor}
-  final bool? showCursor;
-
-  /// If [maxLength] is set to this value, only the "current input length"
-  /// part of the character counter is shown.
-  static const int noMaxLength = -1;
-
-  /// The maximum number of characters (Unicode scalar values) to allow in the
-  /// text field.
-  ///
-  /// If set, a character counter will be displayed below the
-  /// field showing how many characters have been entered. If set to a number
-  /// greater than 0, it will also display the maximum number allowed. If set
-  /// to [TextField.noMaxLength] then only the current character count is displayed.
-  ///
-  /// After [maxLength] characters have been input, additional input
-  /// is ignored, unless [maxLengthEnforcement] is set to
-  /// [MaxLengthEnforcement.none].
-  ///
-  /// The text field enforces the length with a [LengthLimitingTextInputFormatter],
-  /// which is evaluated after the supplied [inputFormatters], if any.
-  ///
-  /// This value must be either null, [TextField.noMaxLength], or greater than 0.
-  /// If null (the default) then there is no limit to the number of characters
-  /// that can be entered. If set to [TextField.noMaxLength], then no limit will
-  /// be enforced, but the number of characters entered will still be displayed.
-  ///
-  /// Whitespace characters (e.g. newline, space, tab) are included in the
-  /// character count.
-  ///
-  /// If [maxLengthEnforcement] is [MaxLengthEnforcement.none], then more than [maxLength]
-  /// characters may be entered, but the error counter and divider will switch
-  /// to the [decoration]'s [InputDecoration.errorStyle] when the limit is
-  /// exceeded.
-  ///
-  /// {@macro flutter.services.lengthLimitingTextInputFormatter.maxLength}
-  final int? maxLength;
-
-  /// Determines how the [maxLength] limit should be enforced.
-  ///
-  /// {@macro flutter.services.textFormatter.effectiveMaxLengthEnforcement}
-  ///
-  /// {@macro flutter.services.textFormatter.maxLengthEnforcement}
-  final MaxLengthEnforcement? maxLengthEnforcement;
 
   /// {@macro flutter.widgets.editableText.onChanged}
   ///
@@ -273,25 +187,10 @@ class FormKitTextField extends StatefulWidget {
   ///    runs and can validate and change ("format") the input value.
   ///  * [onEditingComplete], [onSubmitted]:
   ///    which are more specialized input change notifications.
-  final ValueChanged<String>? onChanged;
-
-  /// {@macro flutter.widgets.editableText.onEditingComplete}
-  final VoidCallback? onEditingComplete;
-
-  /// {@macro flutter.widgets.editableText.onSubmitted}
-  ///
-  /// See also:
-  ///
-  ///  * [TextInputAction.next] and [TextInputAction.previous], which
-  ///    automatically shift the focus to the next/previous focusable item when
-  ///    the user is done editing.
-  final ValueChanged<String>? onSubmitted;
+  final ValueChanged<DateTime?>? onChanged;
 
   /// {@macro flutter.widgets.editableText.onAppPrivateCommand}
   final AppPrivateCommandCallback? onAppPrivateCommand;
-
-  /// {@macro flutter.widgets.editableText.inputFormatters}
-  final List<TextInputFormatter>? inputFormatters;
 
   /// If false the text field is "disabled": it ignores taps and its
   /// [decoration] is rendered in grey.
@@ -299,44 +198,6 @@ class FormKitTextField extends StatefulWidget {
   /// If non-null this property overrides the [decoration]'s
   /// [InputDecoration.enabled] property.
   final bool? enabled;
-
-  /// {@macro flutter.widgets.editableText.cursorWidth}
-  final double cursorWidth;
-
-  /// {@macro flutter.widgets.editableText.cursorHeight}
-  final double? cursorHeight;
-
-  /// {@macro flutter.widgets.editableText.cursorRadius}
-  final Radius? cursorRadius;
-
-  /// The color of the cursor.
-  ///
-  /// The cursor indicates the current location of text insertion point in
-  /// the field.
-  ///
-  /// If this is null it will default to the ambient
-  /// [TextSelectionThemeData.cursorColor]. If that is null, and the
-  /// [ThemeData.platform] is [TargetPlatform.iOS] or [TargetPlatform.macOS]
-  /// it will use [CupertinoThemeData.primaryColor]. Otherwise it will use
-  /// the value of [ColorScheme.primary] of [ThemeData.colorScheme].
-  final Color? cursorColor;
-
-  /// Controls how tall the selection highlight boxes are computed to be.
-  ///
-  /// See [ui.BoxHeightStyle] for details on available styles.
-  final ui.BoxHeightStyle selectionHeightStyle;
-
-  /// Controls how wide the selection highlight boxes are computed to be.
-  ///
-  /// See [ui.BoxWidthStyle] for details on available styles.
-  final ui.BoxWidthStyle selectionWidthStyle;
-
-  /// The appearance of the keyboard.
-  ///
-  /// This setting is only honored on iOS devices.
-  ///
-  /// If unset, defaults to the brightness of [ThemeData.primaryColorBrightness].
-  final Brightness? keyboardAppearance;
 
   /// {@macro flutter.widgets.editableText.scrollPadding}
   final EdgeInsets scrollPadding;
@@ -352,28 +213,6 @@ class FormKitTextField extends StatefulWidget {
 
   /// {@macro flutter.widgets.editableText.selectionEnabled}
   bool get selectionEnabled => enableInteractiveSelection;
-
-  /// {@template flutter.material.textfield.onTap}
-  /// Called for each distinct tap except for every second tap of a double tap.
-  ///
-  /// The text field builds a [GestureDetector] to handle input events like tap,
-  /// to trigger focus requests, to move the caret, adjust the selection, etc.
-  /// Handling some of those events by wrapping the text field with a competing
-  /// GestureDetector is problematic.
-  ///
-  /// To unconditionally handle taps, without interfering with the text field's
-  /// internal gesture detector, provide this callback.
-  ///
-  /// If the text field is created with [enabled] false, taps will not be
-  /// recognized.
-  ///
-  /// To be notified when the text field gains or loses the focus, provide a
-  /// [focusNode] and add a listener to that.
-  ///
-  /// To listen to arbitrary pointer events without competing with the
-  /// text field's internal gesture detector, use a [Listener].
-  /// {@endtemplate}
-  final GestureTapCallback? onTap;
 
   /// The cursor for a mouse pointer when it enters or is hovering over the
   /// widget.
@@ -432,10 +271,6 @@ class FormKitTextField extends StatefulWidget {
   /// {@macro flutter.widgets.editableText.scrollController}
   final ScrollController? scrollController;
 
-  /// {@macro flutter.widgets.editableText.autofillHints}
-  /// {@macro flutter.services.AutofillConfiguration.autofillHints}
-  final Iterable<String>? autofillHints;
-
   /// {@template flutter.material.textfield.restorationId}
   /// Restoration ID to save and restore the state of the text field.
   ///
@@ -458,92 +293,65 @@ class FormKitTextField extends StatefulWidget {
   ///#endregion
 
   @override
-  _FormKitTextFieldState createState() => _FormKitTextFieldState();
+  _FormKitDateFieldState createState() => _FormKitDateFieldState();
 }
 
-class _FormKitTextFieldState extends State<FormKitTextField> {
+class _FormKitDateFieldState extends State<FormKitDateField> {
+  DateTime? _value;
+
   TextEditingController? _fallbackController;
   TextEditingController get _controller =>
       widget.controller ?? (_fallbackController ??= TextEditingController());
 
-  bool get _enabled =>
-      widget.enabled ?? FormKit.of(context).widget.enabled;
+  bool get _enabled => widget.enabled ?? FormKit.of(context).widget.enabled;
+  DateTime get _initialDate => widget.initialDate ?? _value ?? DateTime.now();
+  DateFormatter get _dateFormatter =>
+      widget.dateFormatter ??
+      MaterialLocalizations.of(context).formatCompactDate;
 
-  void _onSetValue(String? value) {
-    _controller.text = value ?? '';
+  void _onSetValue(DateTime? value) {
+    _value = value;
+
     if (value != null) {
-      _controller.selection = TextSelection.collapsed(offset: value.length);
+      _controller.text = _dateFormatter(value);
+      _controller.selection =
+          TextSelection.collapsed(offset: _controller.text.length);
+    } else {
+      _controller.text = '';
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return FormKitField<String>(
+    return FormKitField<DateTime?>(
       name: widget.name,
-      onSetValue: _onSetValue,
       validator: widget.validator,
       validatorInterval: widget.validatorInterval,
       validatorTimerMode: widget.validatorTimerMode,
+      onSetValue: _onSetValue,
       builder: (onChanged, validationState) {
-        final decoration = _getDecoration(validationState);
+        final decoration = _getDecoration(onChanged, validationState);
 
         return TextField(
           controller: _controller,
           enabled: _enabled,
           decoration: decoration,
-          onChanged: (value) {
-            onChanged(value);
-            if (widget.onChanged != null) {
-              widget.onChanged!(value);
-            }
-          },
+          readOnly: true,
 
           ///#region [TextField] properties
           focusNode: widget.focusNode,
-          keyboardType: widget.keyboardType,
-          textInputAction: widget.textInputAction,
           style: widget.style,
           strutStyle: widget.strutStyle,
           textAlign: widget.textAlign,
           textAlignVertical: widget.textAlignVertical,
           textDirection: widget.textDirection,
-          textCapitalization: widget.textCapitalization,
           autofocus: widget.autofocus,
           toolbarOptions: widget.toolbarOptions,
-          readOnly: widget.readOnly,
-          showCursor: widget.showCursor,
-          obscuringCharacter: widget.obscuringCharacter,
-          obscureText: widget.obscureText,
-          autocorrect: widget.autocorrect,
-          smartDashesType: widget.smartDashesType ??
-              (widget.obscureText
-                  ? SmartDashesType.disabled
-                  : SmartDashesType.enabled),
-          smartQuotesType: widget.smartQuotesType ??
-              (widget.obscureText
-                  ? SmartQuotesType.disabled
-                  : SmartQuotesType.enabled),
-          enableSuggestions: widget.enableSuggestions,
-          maxLengthEnforcement: widget.maxLengthEnforcement,
-          maxLines: widget.maxLines,
-          minLines: widget.minLines,
-          expands: widget.expands,
-          maxLength: widget.maxLength,
-          onTap: widget.onTap,
-          onEditingComplete: widget.onEditingComplete,
-          onSubmitted: widget.onSubmitted,
-          inputFormatters: widget.inputFormatters,
-          cursorWidth: widget.cursorWidth,
-          cursorHeight: widget.cursorHeight,
-          cursorRadius: widget.cursorRadius,
-          cursorColor: widget.cursorColor,
           scrollPadding: widget.scrollPadding,
           scrollPhysics: widget.scrollPhysics,
-          keyboardAppearance: widget.keyboardAppearance,
           enableInteractiveSelection: widget.enableInteractiveSelection,
           selectionControls: widget.selectionControls,
           buildCounter: widget.buildCounter,
-          autofillHints: widget.autofillHints,
 
           ///#endregion
         );
@@ -551,7 +359,10 @@ class _FormKitTextFieldState extends State<FormKitTextField> {
     );
   }
 
-  InputDecoration _getDecoration(ValidationState validationState) {
+  InputDecoration _getDecoration(
+    ValueChanged<DateTime?> onChanged,
+    ValidationState validationState,
+  ) {
     final suffix = validationState.isValidating
         ? _buildLoadingIndicatorSuffix()
         : widget.decoration.suffix;
@@ -559,6 +370,7 @@ class _FormKitTextFieldState extends State<FormKitTextField> {
     return widget.decoration.copyWith(
       errorText: validationState.error,
       suffix: suffix,
+      suffixIcon: _buildCalendarButtonSuffix(onChanged),
     );
   }
 
@@ -575,4 +387,29 @@ class _FormKitTextFieldState extends State<FormKitTextField> {
       ),
     );
   }
+
+  Widget _buildCalendarButtonSuffix(ValueChanged<DateTime?> onChanged) {
+    return IconButton(
+      icon: widget.calendarIcon,
+      onPressed: () async {
+        final date = await showDatePicker(
+          context: context,
+          initialDate: _initialDate,
+          firstDate: widget.firstDate,
+          lastDate: widget.lastDate,
+        );
+
+        if (date != null) {
+          onChanged(date);
+          _onSetValue(date);
+
+          if (widget.onChanged != null) {
+            widget.onChanged!(date);
+          }
+        }
+      },
+    );
+  }
 }
+
+typedef DateFormatter = String Function(DateTime value);
