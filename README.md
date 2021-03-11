@@ -16,32 +16,32 @@ This library is not stable yet!
 - [x] Async validators
 - [x] Backpressure validation (throttling, debounce or none)
 - - [x] Custom timer duration
-- - [x] Defined in [FormKit](./packages/formkit/lib/src/formkit.dart) Widget to serve as default for children fields
+- - [x] When defined in FormKit widget will serve as default for children fields
 - [x] Custom validators
 - - [x] User custom validator
-- - [x] Validator composer: [code](./packages/formkit/lib/src/validators/formkit_validator_composer.dart)
-- - [x] Required field: [code](./packages/formkit/lib/src/validators/formkit_required_validator.dart)
-- - [x] Equal to another field: [code](./packages/formkit/lib/src/validators/formkit_equal_field_validator.dart)
-- - [x] Equal to value: [code](./packages/formkit/lib/src/validators/formkit_equal_validator.dart)
-- - [x] Minimum length: [code](./packages/formkit/lib/src/validators/formkit_min_length_validator.dart)
-- - [x] Maximum length: [code](./packages/formkit/lib/src/validators/formkit_max_length_validator.dart)
-- - [x] Minimum value: [code](./packages/formkit/lib/src/validators/formkit_min_validator.dart)
-- - [x] Maximum value: [code](./packages/formkit/lib/src/validators/formkit_max_validator.dart)
-- - [x] RegExp: [code](./packages/formkit/lib/src/validators/formkit_match_validator.dart)
-- - [x] Email: [code](./packages/formkit/lib/src/validators/formkit_email_validator.dart)
+- - [x] Validator composer
+- - [x] Required field
+- - [x] Equal to another field
+- - [x] Equal to value
+- - [x] Minimum length
+- - [x] Maximum length
+- - [x] Minimum value
+- - [x] Maximum value
+- - [x] RegExp
+- - [x] Email
 
 ### Form fields
 
-- [x] Custom user defined field: [code](./packages/formkit/lib/src/fields/formkit_field.dart)
+- [x] Custom user defined field
 - [ ] Material Fields
-- - [x] Text Field: [code](./packages/formkit/lib/src/fields/formkit_text_field.dart)
-- - [x] Checkbox Field: [code](./packages/formkit/lib/src/fields/formkit_checkbox_field.dart)
-- - [x] Date Field: [code](./packages/formkit/lib/src/fields/formkit_date_field.dart)
-- - [x] Date range Field: [code](./packages/formkit/lib/src/fields/formkit_daterange_field.dart)
-- - [x] Time Field: [code](./packages/formkit/lib/src/fields/formkit_time_field.dart)
+- - [x] Text Field
+- - [x] Checkbox Field
+- - [x] Switch Field
+- - [x] Date Field
+- - [x] Date range Field
+- - [x] Time Field
 - - [ ] Radio Field
 - - [ ] Slider Field
-- - [ ] Switch Field
 
 ### Form
 
@@ -56,8 +56,8 @@ This library is not stable yet!
 - [x] Retrieve form errors
 - [x] Retrieve form values
 - [x] onSubmit callback
-- [x] FormKitSubmitBuilder: [code](./packages/formkit/lib/src/widgets/formkit_submit_builder.dart)
-- [x] FormKitShowBuilder: [code](./packages/formkit/lib/src/widgets/formkit_show_builder.dart)
+- [x] FormKitSubmitBuilder
+- [x] FormKitShowBuilder
 
 ### To do:
 

@@ -8,6 +8,7 @@ export 'src/widgets/formkit_show_builder.dart';
 export 'src/fields/formkit_field.dart';
 export 'src/fields/formkit_text_field.dart';
 export 'src/fields/formkit_checkbox_field.dart';
+export 'src/fields/formkit_switch_field.dart';
 export 'src/fields/formkit_date_field.dart';
 export 'src/fields/formkit_daterange_field.dart';
 export 'src/fields/formkit_time_field.dart';
