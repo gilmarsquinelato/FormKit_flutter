@@ -36,7 +36,7 @@ This library is not stable yet!
 - Material Fields
 - - [x] Text Field: [code](./packages/formkit/lib/src/fields/formkit_text_field.dart)
 - - [x] Checkbox Field: [code](./packages/formkit/lib/src/fields/formkit_checkbox_field.dart)
-- - [x] Date Field
+- - [x] Date Field: [code](./packages/formkit/lib/src/fields/formkit_date_field.dart)
 - - [ ] Time Field
 - - [ ] DateTime Field
 - - [ ] Radio Field
