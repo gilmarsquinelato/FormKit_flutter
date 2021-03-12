@@ -355,20 +355,23 @@ class _FormKitCheckboxFieldState extends State<FormKitCheckboxField> {
   }
 
   Widget _buildCheckbox(void Function(bool?) onChanged) {
-    return Checkbox(
-      value: _value,
-      onChanged: _enabled ? onChanged : null,
+    return FocusScope(
+      canRequestFocus: false,
+      child: Checkbox(
+        value: _value,
+        onChanged: _enabled ? onChanged : null,
 
-      ///#region [Checkbox] properties
-      mouseCursor: widget.mouseCursor,
-      overlayColor: MaterialStateProperty.all(Colors.transparent),
-      activeColor: widget.activeColor,
-      fillColor: widget.fillColor,
-      checkColor: widget.checkColor,
-      tristate: widget.tristate,
-      visualDensity: widget.visualDensity,
+        ///#region [Checkbox] properties
+        mouseCursor: widget.mouseCursor,
+        overlayColor: MaterialStateProperty.all(Colors.transparent),
+        activeColor: widget.activeColor,
+        fillColor: widget.fillColor,
+        checkColor: widget.checkColor,
+        tristate: widget.tristate,
+        visualDensity: widget.visualDensity,
 
-      ///#endregion
+        ///#endregion
+      ),
     );
   }
 }

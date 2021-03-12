@@ -13,14 +13,14 @@ import 'package:formkit/src/validators/formkit_validator.dart';
 /// )
 /// ```
 /// {@end-tool}
-class FormKitMinValidator extends FormKitValidator<num> {
-  final ErrorMessageBuilder<num> errorMessageBuilder;
-  final num min;
+class FormKitMinValidator<T extends num> extends FormKitValidator<T> {
+  final ErrorMessageBuilder<T> errorMessageBuilder;
+  final T min;
 
   FormKitMinValidator(this.min, this.errorMessageBuilder);
 
   @override
-  Future<String?> validate(num? value, Map<String, dynamic> formValues) async {
+  Future<String?> validate(T? value, Map<String, dynamic> formValues) async {
     if (value != null && value < min) {
       return errorMessageBuilder(value, formValues);
     }

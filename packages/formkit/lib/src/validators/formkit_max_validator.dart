@@ -13,14 +13,14 @@ import 'package:formkit/src/validators/formkit_validator.dart';
 /// )
 /// ```
 /// {@end-tool}
-class FormKitMaxValidator extends FormKitValidator<num> {
-  final ErrorMessageBuilder<num> errorMessageBuilder;
-  final num max;
+class FormKitMaxValidator<T extends num> extends FormKitValidator<T> {
+  final ErrorMessageBuilder<T> errorMessageBuilder;
+  final T max;
 
   FormKitMaxValidator(this.max, this.errorMessageBuilder);
 
   @override
-  Future<String?> validate(num? value, Map<String, dynamic> formValues) async {
+  Future<String?> validate(T? value, Map<String, dynamic> formValues) async {
     if (value != null && value > max) {
       return errorMessageBuilder(value, formValues);
     }

@@ -41,7 +41,8 @@ This library is not stable yet!
 - - [x] Date range Field
 - - [x] Time Field
 - - [x] Radio Field
-- - [ ] Slider Field
+- - [x] Slider Field
+- - [ ] Range Slider Field
 - - [x] Dropdown Field
 
 ### Form
