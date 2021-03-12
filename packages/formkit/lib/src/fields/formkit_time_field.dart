@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:formkit/formkit.dart';
+import 'package:formkit/src/widgets/internal/loading_indicator.dart';
 
 /// FormKit material Date picker field
 ///
@@ -287,8 +288,7 @@ class _FormKitTimeFieldState extends State<FormKitTimeField> {
   bool get _enabled => widget.enabled ?? FormKit.of(context).widget.enabled;
   TimeOfDay get _initialTime => widget.initialTime ?? _value ?? TimeOfDay.now();
   TimeFormatter get _timeFormatter =>
-      widget.timeFormatter ??
-      MaterialLocalizations.of(context).formatTimeOfDay;
+      widget.timeFormatter ?? MaterialLocalizations.of(context).formatTimeOfDay;
 
   void _onSetValue(TimeOfDay? value) {
     _value = value;
@@ -360,13 +360,7 @@ class _FormKitTimeFieldState extends State<FormKitTimeField> {
     final iconSize = decorationIsDense ? 18.0 : 24.0;
     final indicatorSize = iconSize - 8;
 
-    return SizedBox(
-      width: indicatorSize,
-      height: indicatorSize,
-      child: const CircularProgressIndicator(
-        strokeWidth: 2,
-      ),
-    );
+    return LoadingIndicator(size: indicatorSize);
   }
 
   Widget _buildCalendarButtonSuffix(ValueChanged<TimeOfDay?> onChanged) {

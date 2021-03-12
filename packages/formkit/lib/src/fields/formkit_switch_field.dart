@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:formkit/formkit.dart';
+import 'package:formkit/src/widgets/internal/error_text.dart';
 
 /// FormKit material [Switch] field wrapper
 ///
@@ -405,13 +406,9 @@ class _FormKitSwitchFieldState extends State<FormKitSwitchField> {
           }
         };
 
-        final theme = Theme.of(context);
-        final errorStyle =
-            theme.textTheme.caption!.copyWith(color: theme.errorColor);
-
         final subtitle = validationState.error != null && _enabled
-            ? Text(validationState.error!, style: errorStyle)
-            : widget.subtitle;
+            ? ErrorText(enabled: _enabled, errorText: validationState.error)
+            : null;
 
         return ListTile(
           onTap: _enabled ? () => handleChange(!_value) : null,

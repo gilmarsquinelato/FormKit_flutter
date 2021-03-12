@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:formkit/formkit.dart';
+import 'package:formkit/src/widgets/internal/loading_indicator.dart';
 
 /// FormKit material [TextField] field wrapper
 ///
@@ -466,8 +467,7 @@ class _FormKitTextFieldState extends State<FormKitTextField> {
   TextEditingController get _controller =>
       widget.controller ?? (_fallbackController ??= TextEditingController());
 
-  bool get _enabled =>
-      widget.enabled ?? FormKit.of(context).widget.enabled;
+  bool get _enabled => widget.enabled ?? FormKit.of(context).widget.enabled;
 
   void _onSetValue(String? value) {
     _controller.text = value ?? '';
@@ -567,12 +567,6 @@ class _FormKitTextFieldState extends State<FormKitTextField> {
     final iconSize = decorationIsDense ? 18.0 : 24.0;
     final indicatorSize = iconSize - 8;
 
-    return SizedBox(
-      width: indicatorSize,
-      height: indicatorSize,
-      child: const CircularProgressIndicator(
-        strokeWidth: 2,
-      ),
-    );
+    return LoadingIndicator(size: indicatorSize);
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:formkit/formkit.dart';
+import 'package:formkit/src/widgets/internal/loading_indicator.dart';
 
 /// FormKit material Date range picker field
 ///
@@ -396,13 +397,7 @@ class _FormKitDateRangeFieldState extends State<FormKitDateRangeField> {
     final iconSize = decorationIsDense ? 18.0 : 24.0;
     final indicatorSize = iconSize - 8;
 
-    return SizedBox(
-      width: indicatorSize,
-      height: indicatorSize,
-      child: const CircularProgressIndicator(
-        strokeWidth: 2,
-      ),
-    );
+    return LoadingIndicator(size: indicatorSize);
   }
 
   Widget _buildCalendarButtonSuffix(ValueChanged<DateTimeRange?> onChanged) {

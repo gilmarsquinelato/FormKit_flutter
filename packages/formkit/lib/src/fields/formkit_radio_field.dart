@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:formkit/formkit.dart';
+import 'package:formkit/src/widgets/internal/error_text.dart';
 
 /// FormKit material [Radio] field wrapper
 ///
@@ -245,13 +246,9 @@ class _FormKitRadioFieldState<T> extends State<FormKitRadioField<T>> {
           }
         };
 
-        final theme = Theme.of(context);
-        final errorStyle =
-            theme.textTheme.caption!.copyWith(color: theme.errorColor);
-
-        final hasError = validationState.error != null && _enabled;
-        final subtitle =
-            hasError ? Text(validationState.error!, style: errorStyle) : null;
+        final subtitle = validationState.error != null && _enabled
+            ? ErrorText(enabled: _enabled, errorText: validationState.error)
+            : null;
 
         final options = widget.options.entries
             .map(
@@ -259,7 +256,6 @@ class _FormKitRadioFieldState<T> extends State<FormKitRadioField<T>> {
                 entry.key,
                 entry.value,
                 handleChange,
-                hasError,
                 subtitle,
               ),
             )
@@ -278,7 +274,6 @@ class _FormKitRadioFieldState<T> extends State<FormKitRadioField<T>> {
     T value,
     Widget label,
     void Function(T?) onChanged,
-    bool hasError,
     Widget? subtitle,
   ) {
     return ListTile(
@@ -286,7 +281,7 @@ class _FormKitRadioFieldState<T> extends State<FormKitRadioField<T>> {
       leading: _buildRadio(value, onChanged),
       title: label,
       enabled: _enabled,
-      subtitle: _value == value && hasError ? subtitle : null,
+      subtitle: subtitle,
 
       ///#region [ListTile] properties
       dense: widget.dense,

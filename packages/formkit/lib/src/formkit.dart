@@ -210,7 +210,6 @@ class FormKitState extends State<FormKit> {
   /// and return the current form values.
   /// {@endtemplate}
   Future<Map<String, dynamic>?> submit() async {
-    print(values);
     await validate();
     if (hasErrors) {
       return null;

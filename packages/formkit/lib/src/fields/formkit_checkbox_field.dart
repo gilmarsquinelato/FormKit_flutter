@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:formkit/formkit.dart';
+import 'package:formkit/src/widgets/internal/error_text.dart';
 
 /// FormKit material [Checkbox] field wrapper
 ///
@@ -318,20 +319,16 @@ class _FormKitCheckboxFieldState extends State<FormKitCheckboxField> {
           }
         };
 
-        final theme = Theme.of(context);
-        final errorStyle =
-            theme.textTheme.caption!.copyWith(color: theme.errorColor);
-
         final subtitle = validationState.error != null && _enabled
-            ? Text(validationState.error!, style: errorStyle)
+            ? ErrorText(enabled: _enabled, errorText: validationState.error)
             : widget.subtitle;
 
         return ListTile(
           onTap: _enabled ? () => handleChange(_getNextValue()) : null,
           leading: _buildCheckbox(handleChange),
           title: widget.title,
-          subtitle: subtitle,
           enabled: _enabled,
+          subtitle: subtitle,
 
           ///#region [ListTile] properties
           trailing: widget.trailing,
