@@ -327,16 +327,20 @@ class _FormKitDateRangeFieldState extends State<FormKitDateRangeField> {
     return '${_dateFormatter(range.start)} - ${_dateFormatter(range.end)}';
   }
 
-  void _onSetValue(DateTimeRange? value) {
-    _value = value;
-
-    if (value != null) {
-      _controller.text = _dateRangeFormatter(value);
-      _controller.selection =
-          TextSelection.collapsed(offset: _controller.text.length);
-    } else {
+  void _onSetValue(dynamic? value) {
+    if (value == null) {
       _controller.text = '';
+      return;
     }
+
+    if (!(value is DateTimeRange)) {
+      return;
+    }
+
+    _value = value;
+    _controller.text = _dateRangeFormatter(value);
+    _controller.selection =
+        TextSelection.collapsed(offset: _controller.text.length);
   }
 
   @override

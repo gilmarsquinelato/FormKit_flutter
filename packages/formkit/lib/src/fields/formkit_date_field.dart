@@ -309,7 +309,7 @@ class _FormKitDateFieldState extends State<FormKitDateField> {
       widget.dateFormatter ??
       MaterialLocalizations.of(context).formatCompactDate;
 
-  void _onSetValue(DateTime? value) {
+  void _onSetValue(dynamic? value) {
     _value = value;
 
     if (value != null) {

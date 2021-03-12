@@ -92,27 +92,6 @@ class FormKitSliderField extends StatefulWidget {
   /// The value passed will be the last [value] that the slider had before the
   /// change began.
   ///
-  /// {@tool snippet}
-  ///
-  /// ```dart
-  /// Slider(
-  ///   value: _duelCommandment.toDouble(),
-  ///   min: 1.0,
-  ///   max: 10.0,
-  ///   divisions: 10,
-  ///   label: '$_duelCommandment',
-  ///   onChanged: (double newValue) {
-  ///     setState(() {
-  ///       _duelCommandment = newValue.round();
-  ///     });
-  ///   },
-  ///   onChangeStart: (double startValue) {
-  ///     print('Started change at $startValue');
-  ///   },
-  /// )
-  /// ```
-  /// {@end-tool}
-  ///
   /// See also:
   ///
   ///  * [onChangeEnd] for a callback that is called when the value change is
@@ -124,27 +103,6 @@ class FormKitSliderField extends StatefulWidget {
   /// This callback shouldn't be used to update the slider [value] (use
   /// [onChanged] for that), but rather to know when the user has completed
   /// selecting a new [value] by ending a drag or a click.
-  ///
-  /// {@tool snippet}
-  ///
-  /// ```dart
-  /// Slider(
-  ///   value: _duelCommandment.toDouble(),
-  ///   min: 1.0,
-  ///   max: 10.0,
-  ///   divisions: 10,
-  ///   label: '$_duelCommandment',
-  ///   onChanged: (double newValue) {
-  ///     setState(() {
-  ///       _duelCommandment = newValue.round();
-  ///     });
-  ///   },
-  ///   onChangeEnd: (double newValue) {
-  ///     print('Ended change on $newValue');
-  ///   },
-  /// )
-  /// ```
-  /// {@end-tool}
   ///
   /// See also:
   ///
@@ -241,29 +199,6 @@ class FormKitSliderField extends StatefulWidget {
   /// This is used by accessibility frameworks like TalkBack on Android to
   /// inform users what the currently selected value is with more context.
   ///
-  /// {@tool snippet}
-  ///
-  /// In the example below, a slider for currency values is configured to
-  /// announce a value with a currency label.
-  ///
-  /// ```dart
-  /// Slider(
-  ///   value: _dollars.toDouble(),
-  ///   min: 20.0,
-  ///   max: 330.0,
-  ///   label: '$_dollars dollars',
-  ///   onChanged: (double newValue) {
-  ///     setState(() {
-  ///       _dollars = newValue.round();
-  ///     });
-  ///   },
-  ///   semanticFormatterCallback: (double newValue) {
-  ///     return '${newValue.round()} dollars';
-  ///   }
-  ///  )
-  /// ```
-  /// {@end-tool}
-  ///
   /// Ignored if this slider is created with [Slider.adaptive]
   final SemanticFormatterCallback? semanticFormatterCallback;
 
@@ -276,9 +211,18 @@ class FormKitSliderField extends StatefulWidget {
 class _FormKitSliderFieldState extends State<FormKitSliderField> {
   double _value = 0;
 
-  void _onSetValue(double? value) {
+  void _onSetValue(dynamic? value) {
     if (value == null) {
       return;
+    }
+
+    if (value is int) {
+      _value = value.toDouble().clamp(widget.min, widget.max);
+      return;
+    }
+
+    if (value is double) {
+      _value = value.clamp(widget.min, widget.max);
     }
   }
 
@@ -316,9 +260,10 @@ class _FormKitSliderFieldState extends State<FormKitSliderField> {
 
     // based on the original InputDecorator padding calculation,
     // but without bottom padding to have a better visual with the errorText and helperText
-    final contentPadding = decoration.contentPadding ?? (decoration.isDense == true
-        ? const EdgeInsets.fromLTRB(12.0, 20.0, 12.0, 0.0)
-        : const EdgeInsets.fromLTRB(12.0, 24.0, 12.0, 0.0));
+    final contentPadding = decoration.contentPadding ??
+        (decoration.isDense == true
+            ? const EdgeInsets.fromLTRB(12.0, 20.0, 12.0, 0.0)
+            : const EdgeInsets.fromLTRB(12.0, 24.0, 12.0, 0.0));
 
     final suffix = validationState.isValidating
         ? _buildLoadingIndicatorSuffix()

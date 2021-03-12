@@ -383,8 +383,8 @@ class _FormKitSwitchFieldState extends State<FormKitSwitchField> {
 
   bool get _enabled => widget.enabled ?? FormKit.of(context).widget.enabled;
 
-  void _setValue(bool? value) {
-    _value = value == null ? false : value;
+  void _setValue(dynamic? value) {
+    _value = value == true;
   }
 
   @override

@@ -285,7 +285,7 @@ class _FormKitCheckboxFieldState extends State<FormKitCheckboxField> {
     super.initState();
   }
 
-  void _setValue(bool? value) {
+  void _setValue(dynamic? value) {
     _value = value == null && !widget.tristate ? false : value;
   }
 

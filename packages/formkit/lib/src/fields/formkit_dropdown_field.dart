@@ -304,8 +304,10 @@ class _FormKitDropdownFieldState<T> extends State<FormKitDropdownField<T>> {
 
   bool get _enabled => widget.enabled ?? FormKit.of(context).widget.enabled;
 
-  void _setValue(T? value) {
-    _value = value;
+  void _setValue(dynamic? value) {
+    if (value is T) {
+      _value = value;
+    }
   }
 
   @override

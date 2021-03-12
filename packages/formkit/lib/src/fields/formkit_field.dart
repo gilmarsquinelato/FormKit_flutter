@@ -45,7 +45,13 @@ class FormKitField<T> extends StatefulWidget {
   final FormKitFieldBuilder<T> builder;
 
   /// When a new value is set by the parent [FormKit]
-  final ValueChanged<T?> onSetValue;
+  ///
+  /// [dynamic] is used instead of [T] because of
+  /// [FormKit] initial value don't have a strong typing,
+  /// one possible case is to provide an integer for a double field
+  /// and this makes the app to crash instead of try to convert that
+  /// value in the field widget.
+  final ValueChanged<dynamic?> onSetValue;
 
   /// {@template formkit.fields.formKitField.validator}
   /// Validator function.
@@ -131,7 +137,7 @@ class FormKitFieldState<T> extends State<FormKitField<T>> {
     );
   }
 
-  void setValue(T? value) {
+  void setValue(dynamic? value) {
     widget.onSetValue(value);
 
     final formKit = FormKit.of(context);

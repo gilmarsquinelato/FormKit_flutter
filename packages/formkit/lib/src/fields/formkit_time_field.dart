@@ -290,16 +290,16 @@ class _FormKitTimeFieldState extends State<FormKitTimeField> {
   TimeFormatter get _timeFormatter =>
       widget.timeFormatter ?? MaterialLocalizations.of(context).formatTimeOfDay;
 
-  void _onSetValue(TimeOfDay? value) {
-    _value = value;
-
-    if (value != null) {
-      _controller.text = _timeFormatter(value);
-      _controller.selection =
-          TextSelection.collapsed(offset: _controller.text.length);
-    } else {
+  void _onSetValue(dynamic? value) {
+    if (value == null || !(value is TimeOfDay)) {
       _controller.text = '';
+      return;
     }
+
+    _value = value;
+    _controller.text = _timeFormatter(value);
+    _controller.selection =
+        TextSelection.collapsed(offset: _controller.text.length);
   }
 
   @override

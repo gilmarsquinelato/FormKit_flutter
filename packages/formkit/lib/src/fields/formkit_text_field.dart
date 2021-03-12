@@ -469,11 +469,14 @@ class _FormKitTextFieldState extends State<FormKitTextField> {
 
   bool get _enabled => widget.enabled ?? FormKit.of(context).widget.enabled;
 
-  void _onSetValue(String? value) {
-    _controller.text = value ?? '';
-    if (value != null) {
-      _controller.selection = TextSelection.collapsed(offset: value.length);
+  void _onSetValue(dynamic? value) {
+    if (value == null || !(value is String)) {
+      _controller.text = '';
+      return;
     }
+
+    _controller.text = value;
+    _controller.selection = TextSelection.collapsed(offset: value.length);
   }
 
   @override

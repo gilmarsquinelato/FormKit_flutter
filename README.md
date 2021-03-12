@@ -33,7 +33,7 @@ This library is not stable yet!
 ### Form fields
 
 - [x] Custom user defined field
-- [ ] Material Fields
+- [x] Material Fields
 - - [x] Text Field
 - - [x] Checkbox Field
 - - [x] Switch Field
@@ -42,7 +42,7 @@ This library is not stable yet!
 - - [x] Time Field
 - - [x] Radio Field
 - - [x] Slider Field
-- - [ ] Range Slider Field
+- - [x] Range Slider Field
 - - [x] Dropdown Field
 
 ### Form
