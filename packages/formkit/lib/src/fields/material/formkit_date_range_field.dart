@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:formkit/formkit.dart';
+import 'package:formkit/src/types.dart';
 import 'package:formkit/src/widgets/internal/loading_indicator.dart';
 
 /// FormKit material Date range picker field
