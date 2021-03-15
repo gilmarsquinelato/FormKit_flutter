@@ -442,26 +442,30 @@ class _FormKitSwitchFieldState extends State<FormKitSwitchField> {
   }
 
   Widget _buildSwitch(void Function(bool) onChanged) {
-    return Switch(
-      value: _value,
-      onChanged: _enabled ? onChanged : null,
+    return FocusScope(
+      canRequestFocus: false,
+      child: Switch(
+        value: _value,
+        onChanged: _enabled ? onChanged : null,
 
-      ///#region [Switch] properties
-      mouseCursor: widget.mouseCursor,
-      overlayColor: MaterialStateProperty.all(Colors.transparent),
-      activeColor: widget.activeColor,
-      focusColor: widget.focusColor,
-      activeTrackColor: widget.activeTrackColor,
-      inactiveThumbColor: widget.inactiveThumbColor,
-      inactiveTrackColor: widget.inactiveTrackColor,
-      activeThumbImage: widget.activeThumbImage,
-      onActiveThumbImageError: widget.onActiveThumbImageError,
-      inactiveThumbImage: widget.inactiveThumbImage,
-      onInactiveThumbImageError: widget.onInactiveThumbImageError,
-      thumbColor: widget.thumbColor,
-      trackColor: widget.trackColor,
-      materialTapTargetSize: widget.materialTapTargetSize,
-      ///#endregion
+        ///#region [Switch] properties
+        mouseCursor: widget.mouseCursor,
+        overlayColor: MaterialStateProperty.all(Colors.transparent),
+        activeColor: widget.activeColor,
+        focusColor: widget.focusColor,
+        activeTrackColor: widget.activeTrackColor,
+        inactiveThumbColor: widget.inactiveThumbColor,
+        inactiveTrackColor: widget.inactiveTrackColor,
+        activeThumbImage: widget.activeThumbImage,
+        onActiveThumbImageError: widget.onActiveThumbImageError,
+        inactiveThumbImage: widget.inactiveThumbImage,
+        onInactiveThumbImageError: widget.onInactiveThumbImageError,
+        thumbColor: widget.thumbColor,
+        trackColor: widget.trackColor,
+        materialTapTargetSize: widget.materialTapTargetSize,
+
+        ///#endregion
+      ),
     );
   }
 }

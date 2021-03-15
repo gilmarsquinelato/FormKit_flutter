@@ -41,6 +41,7 @@ class FormKitDropdownField<T> extends StatefulWidget {
     this.validatorTimerMode,
     this.onChanged,
     this.enabled,
+    this.decoration = const InputDecoration(),
 
     ///#region [DropdownButton] properties
     this.selectedItemBuilder,
@@ -88,6 +89,12 @@ class FormKitDropdownField<T> extends StatefulWidget {
 
   /// Whether this field is enabled or not
   final bool? enabled;
+
+  /// The decoration to show around the field.
+  ///
+  /// Specify null to remove the decoration entirely (including the
+  /// extra padding introduced by the decoration to save space for the labels).
+  final InputDecoration decoration;
 
   ///#region [DropdownButton] properties
 
@@ -333,45 +340,56 @@ class _FormKitDropdownFieldState<T> extends State<FormKitDropdownField<T>> {
             ? LoadingIndicator(size: widget.iconSize)
             : widget.icon;
 
-        final error = validationState.error != null
-            ? ErrorText(enabled: _enabled, errorText: validationState.error)
-            : SizedBox.shrink();
+        final field = DropdownButton(
+          items: widget.items,
+          value: _value,
+          onChanged: _enabled ? handleChange : null,
+          icon: icon,
 
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            DropdownButton(
-              items: widget.items,
-              value: _value,
-              onChanged: _enabled ? handleChange : null,
-              icon: icon,
+          ///#region [DropdownButton] properties
+          hint: widget.hint,
+          selectedItemBuilder: widget.selectedItemBuilder,
+          disabledHint: widget.disabledHint,
+          onTap: widget.onTap,
+          elevation: widget.elevation,
+          style: widget.style,
+          underline: widget.underline,
+          iconDisabledColor: widget.iconDisabledColor,
+          iconEnabledColor: widget.iconEnabledColor,
+          iconSize: widget.iconSize,
+          isDense: widget.isDense,
+          isExpanded: widget.isExpanded,
+          itemHeight: widget.itemHeight,
+          focusColor: widget.focusColor,
+          focusNode: widget.focusNode,
+          autofocus: widget.autofocus,
+          dropdownColor: widget.dropdownColor,
 
-              ///#region [DropdownButton] properties
-              hint: widget.hint,
-              selectedItemBuilder: widget.selectedItemBuilder,
-              disabledHint: widget.disabledHint,
-              onTap: widget.onTap,
-              elevation: widget.elevation,
-              style: widget.style,
-              underline: widget.underline,
-              iconDisabledColor: widget.iconDisabledColor,
-              iconEnabledColor: widget.iconEnabledColor,
-              iconSize: widget.iconSize,
-              isDense: widget.isDense,
-              isExpanded: widget.isExpanded,
-              itemHeight: widget.itemHeight,
-              focusColor: widget.focusColor,
-              focusNode: widget.focusNode,
-              autofocus: widget.autofocus,
-              dropdownColor: widget.dropdownColor,
+          ///#endregion
+        );
 
-              ///#endregion
-            ),
-            error,
-          ],
+        return Listener(
+          onPointerDown: (_) => FocusScope.of(context).unfocus(),
+          child: InputDecorator(
+            decoration: _getDecoration(validationState),
+            child: field,
+          ),
         );
       },
     );
+  }
+
+  InputDecoration _getDecoration(ValidationState validationState) {
+    final decoration = widget.decoration;
+
+    return decoration
+        .applyDefaults(Theme.of(context).inputDecorationTheme)
+        .copyWith(
+          border: decoration.border == null ||
+                  decoration.border is UnderlineInputBorder
+              ? InputBorder.none
+              : decoration.border,
+          errorText: validationState.error,
+        );
   }
 }

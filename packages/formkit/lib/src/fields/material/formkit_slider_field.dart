@@ -258,23 +258,20 @@ class _FormKitSliderFieldState extends State<FormKitSliderField> {
   InputDecoration _getDecoration(ValidationState validationState) {
     final decoration = widget.decoration;
 
-    // based on the original InputDecorator padding calculation,
-    // but without bottom padding to have a better visual with the errorText and helperText
-    final contentPadding = decoration.contentPadding ??
-        (decoration.isDense == true
-            ? const EdgeInsets.fromLTRB(12.0, 20.0, 12.0, 0.0)
-            : const EdgeInsets.fromLTRB(12.0, 24.0, 12.0, 0.0));
-
     final suffix = validationState.isValidating
         ? _buildLoadingIndicatorSuffix()
-        : widget.decoration.suffix;
+        : decoration.suffix;
 
-    return widget.decoration.copyWith(
-      border: InputBorder.none,
-      errorText: validationState.error,
-      suffix: suffix,
-      contentPadding: contentPadding,
-    );
+    return decoration
+        .applyDefaults(Theme.of(context).inputDecorationTheme)
+        .copyWith(
+          border: decoration.border == null ||
+                  decoration.border is UnderlineInputBorder
+              ? InputBorder.none
+              : decoration.border,
+          errorText: validationState.error,
+          suffix: suffix,
+        );
   }
 
   Widget _buildLoadingIndicatorSuffix() {

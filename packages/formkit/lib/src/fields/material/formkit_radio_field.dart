@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:formkit/formkit.dart';
 import 'package:formkit/src/widgets/internal/error_text.dart';
+import 'package:formkit/src/widgets/internal/loading_indicator.dart';
 
 /// FormKit material [Radio] field wrapper
 ///
@@ -32,6 +33,7 @@ class FormKitRadioField<T> extends StatefulWidget {
     this.validatorInterval,
     this.validatorTimerMode,
     this.onChanged,
+    this.decoration = const InputDecoration(),
 
     ///#region [ListTile] properties
     this.dense,
@@ -55,6 +57,7 @@ class FormKitRadioField<T> extends StatefulWidget {
     ///#region [Radio] properties
     this.activeColor,
     this.fillColor,
+
     ///#endregion
   }) : super(key: key);
 
@@ -78,6 +81,12 @@ class FormKitRadioField<T> extends StatefulWidget {
   /// Where the key will be the value once selected,
   /// and the value is the option label
   final Map<T, Widget> options;
+
+  /// The decoration to show around the field.
+  ///
+  /// Specify null to remove the decoration entirely (including the
+  /// extra padding introduced by the decoration to save space for the labels).
+  final InputDecoration decoration;
 
   ///#region [ListTile] properties
 
@@ -263,10 +272,15 @@ class _FormKitRadioFieldState<T> extends State<FormKitRadioField<T>> {
             )
             .toList();
 
-        return Column(
+        final field = Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: options,
+        );
+
+        return InputDecorator(
+          decoration: _getDecoration(validationState),
+          child: field,
         );
       },
     );
@@ -309,20 +323,50 @@ class _FormKitRadioFieldState<T> extends State<FormKitRadioField<T>> {
     T value,
     void Function(T?) onChanged,
   ) {
-    return Radio(
-      value: value,
-      groupValue: _value,
-      onChanged: _enabled ? onChanged : null,
+    return FocusScope(
+      canRequestFocus: false,
+      child: Radio(
+        value: value,
+        groupValue: _value,
+        onChanged: _enabled ? onChanged : null,
 
-      ///#region [Radio] properties
-      mouseCursor: widget.mouseCursor,
-      overlayColor: MaterialStateProperty.all(Colors.transparent),
-      activeColor: widget.activeColor,
-      fillColor: widget.fillColor,
-      focusColor: widget.focusColor,
-      visualDensity: widget.visualDensity,
+        ///#region [Radio] properties
+        mouseCursor: widget.mouseCursor,
+        overlayColor: MaterialStateProperty.all(Colors.transparent),
+        activeColor: widget.activeColor,
+        fillColor: widget.fillColor,
+        focusColor: widget.focusColor,
+        visualDensity: widget.visualDensity,
 
-      ///#endregion
+        ///#endregion
+      ),
     );
+  }
+
+  InputDecoration _getDecoration(ValidationState validationState) {
+    final decoration = widget.decoration;
+
+    final suffix = validationState.isValidating
+        ? _buildLoadingIndicatorSuffix()
+        : decoration.suffix;
+
+    return decoration
+        .applyDefaults(Theme.of(context).inputDecorationTheme)
+        .copyWith(
+          border: decoration.border == null ||
+                  decoration.border is UnderlineInputBorder
+              ? InputBorder.none
+              : decoration.border,
+          errorText: validationState.error,
+          suffix: suffix,
+        );
+  }
+
+  Widget _buildLoadingIndicatorSuffix() {
+    final decorationIsDense = widget.decoration.isDense == true;
+    final iconSize = decorationIsDense ? 18.0 : 24.0;
+    final indicatorSize = iconSize - 8;
+
+    return LoadingIndicator(size: indicatorSize);
   }
 }

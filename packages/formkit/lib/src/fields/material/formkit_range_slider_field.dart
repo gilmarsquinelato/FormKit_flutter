@@ -5,6 +5,8 @@ import 'package:formkit/src/widgets/internal/loading_indicator.dart';
 
 /// A FormKit [RangeSlider] with [InputDecorator] wrapper.
 ///
+/// By default it will start with the value equals to [RangeValues(min, max)].
+///
 /// {@tool snippet}
 /// ```dart
 /// FormKitRangeSliderField(
@@ -41,6 +43,7 @@ class FormKitRangeSliderField extends StatefulWidget {
     this.activeColor,
     this.inactiveColor,
     this.semanticFormatterCallback,
+
     ///#endregion
   }) : super(key: key);
 
@@ -196,7 +199,14 @@ class FormKitRangeSliderField extends StatefulWidget {
 }
 
 class _FormKitRangeSliderFieldState extends State<FormKitRangeSliderField> {
-  RangeValues _values = const RangeValues(0, 0);
+  late RangeValues _values;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _values = RangeValues(widget.min, widget.max);
+  }
 
   void _onSetValue(dynamic? value) {
     if (value == null || !(value is RangeValues)) {
@@ -238,23 +248,20 @@ class _FormKitRangeSliderFieldState extends State<FormKitRangeSliderField> {
   InputDecoration _getDecoration(ValidationState validationState) {
     final decoration = widget.decoration;
 
-    // based on the original InputDecorator padding calculation,
-    // but without bottom padding to have a better visual with the errorText and helperText
-    final contentPadding = decoration.contentPadding ??
-        (decoration.isDense == true
-            ? const EdgeInsets.fromLTRB(12.0, 20.0, 12.0, 0.0)
-            : const EdgeInsets.fromLTRB(12.0, 24.0, 12.0, 0.0));
-
     final suffix = validationState.isValidating
         ? _buildLoadingIndicatorSuffix()
         : widget.decoration.suffix;
 
-    return widget.decoration.copyWith(
-      border: InputBorder.none,
-      errorText: validationState.error,
-      suffix: suffix,
-      contentPadding: contentPadding,
-    );
+    return decoration
+        .applyDefaults(Theme.of(context).inputDecorationTheme)
+        .copyWith(
+          border: decoration.border == null ||
+                  decoration.border is UnderlineInputBorder
+              ? InputBorder.none
+              : decoration.border,
+          errorText: validationState.error,
+          suffix: suffix,
+        );
   }
 
   Widget _buildLoadingIndicatorSuffix() {
@@ -284,6 +291,7 @@ class _FormKitRangeSliderFieldState extends State<FormKitRangeSliderField> {
       activeColor: widget.activeColor,
       inactiveColor: widget.inactiveColor,
       semanticFormatterCallback: widget.semanticFormatterCallback,
+
       ///#endregion
     );
   }

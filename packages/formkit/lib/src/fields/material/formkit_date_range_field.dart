@@ -390,11 +390,13 @@ class _FormKitDateRangeFieldState extends State<FormKitDateRangeField> {
         ? _buildLoadingIndicatorSuffix()
         : widget.decoration.suffix;
 
-    return widget.decoration.copyWith(
-      errorText: validationState.error,
-      suffix: suffix,
-      suffixIcon: _buildCalendarButtonSuffix(onChanged),
-    );
+    return widget.decoration
+        .applyDefaults(Theme.of(context).inputDecorationTheme)
+        .copyWith(
+          errorText: validationState.error,
+          suffix: suffix,
+          suffixIcon: _buildCalendarButtonSuffix(onChanged),
+        );
   }
 
   Widget _buildLoadingIndicatorSuffix() {

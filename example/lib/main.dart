@@ -1,5 +1,6 @@
-import 'package:example/login_form.dart';
-import 'package:example/signup_form.dart';
+import 'package:example/material_fields.dart';
+import 'package:example/material_login_form.dart';
+import 'package:example/material_signup_form.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -10,6 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'FormKit Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -41,6 +43,12 @@ class ExamplesCatalog extends StatelessWidget {
             title: const Text('Signup Form'),
             onTap: () => Navigator.of(context).push(MaterialPageRoute(
               builder: (_) => SignupForm(),
+            )),
+          ),
+          ListTile(
+            title: const Text('All Fields'),
+            onTap: () => Navigator.of(context).push(MaterialPageRoute(
+              builder: (_) => MaterialFields(),
             )),
           ),
         ],

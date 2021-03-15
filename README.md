@@ -11,8 +11,9 @@ This library is not stable yet!
 
 ## Examples
 
-* Material Login Form [link](./example/lib/login_form.dart)
-* Material SignUp Form [link](./example/lib/signup_form.dart)
+* Material Login Form [link](./example/lib/material_login_form.dart)
+* Material SignUp Form [link](./example/lib/material_signup_form.dart)
+* All Material Fields  [link](./example/lib/material_fields.dart)
 
 ## Features
 
