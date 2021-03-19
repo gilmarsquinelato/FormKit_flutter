@@ -91,6 +91,7 @@ class FormKit extends StatefulWidget {
     this.validatorTimerMode,
     this.validatorInterval,
     this.onSubmit,
+    this.submitWithErrors = false,
     this.enabled = true,
   }) : super(key: key);
 
@@ -124,7 +125,20 @@ class FormKit extends StatefulWidget {
   /// overriding this value on the specific field.
   final ValidatorTimerMode? validatorTimerMode;
 
-  final Function(Map<String, dynamic?> values)? onSubmit;
+  /// Submit callback, called when the form is submitted
+  final Function(
+    Map<String, dynamic?> values,
+    Map<String, String?> errors,
+  )? onSubmit;
+
+  /// Determine if the form should call [onSubmit]
+  /// even if the form has validation errors.
+  ///
+  /// This is useful if you want to validate the inputs,
+  /// but instead of not submitting, you just prompt the user
+  /// asking to check its data, or a confirmation
+  /// if the user has sure about it and wants to continue.
+  final bool submitWithErrors;
 
   /// Enables the form to veto attempts by the user to dismiss the [ModalRoute]
   /// that contains the form.
@@ -211,12 +225,14 @@ class FormKitState extends State<FormKit> {
   /// {@endtemplate}
   Future<Map<String, dynamic>?> submit() async {
     await validate();
-    if (hasErrors) {
-      return null;
+    if (widget.onSubmit != null) {
+      if (!hasErrors || widget.submitWithErrors) {
+        widget.onSubmit!(values, errors);
+      }
     }
 
-    if (widget.onSubmit != null) {
-      widget.onSubmit!(values);
+    if (hasErrors) {
+      return null;
     }
 
     return values;
@@ -280,8 +296,10 @@ class FormKitState extends State<FormKit> {
   void register(FormKitFieldState field) {
     _fields.add(field);
 
-    if (widget.initialValues != null && _values.containsKey(field.name)) {
+    if (_values.containsKey(field.name)) {
       field.setValue(_values[field.name]);
+    } else {
+      _values[field.name] = null;
     }
   }
 

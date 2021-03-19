@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:formkit/formkit.dart';
+import 'package:formkit/material.dart';
 
 class SignupForm extends StatelessWidget {
   @override
@@ -109,7 +110,7 @@ class SignupForm extends StatelessWidget {
     );
   }
 
-  void _signup(Map<String, dynamic?> values) {
+  void _signup(Map<String, dynamic?> values, _errors) {
     print('Signup successful: $values');
   }
 }

@@ -311,13 +311,13 @@ class _FormKitDateFieldState extends State<FormKitDateField> {
       MaterialLocalizations.of(context).formatCompactDate;
 
   void _onSetValue(dynamic? value) {
-    _value = value;
-
-    if (value != null) {
+    if (value is DateTime) {
+      _value = value;
       _controller.text = _dateFormatter(value);
       _controller.selection =
           TextSelection.collapsed(offset: _controller.text.length);
     } else {
+      _value = null;
       _controller.text = '';
     }
   }

@@ -1,29 +1,30 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:formkit/cupertino.dart';
 import 'package:formkit/formkit.dart';
-import 'package:formkit/material.dart';
 
-class LoginForm extends StatelessWidget {
+class CupertinoLoginFormSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Login'),
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        middle: Text('Login - Form Section'),
+        previousPageTitle: 'Example',
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
+      child: SafeArea(
+        bottom: false,
+        child: Center(
           child: FormKit(
-            onSubmit: _login,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            validatorTimerMode: ValidatorTimerMode.debounce,
-            child: Column(
+            onSubmit: _onSubmit,
+            child: CupertinoFormSection(
+              header: Text('Login Form'),
               children: [
-                FormKitTextField(
+                FormKitCupertinoTextField.formRow(
                   name: 'email',
+                  placeholder: 'required',
+                  prefix: SizedBox(width: 120, child: Text('Email')),
+                  clearButtonMode: OverlayVisibilityMode.editing,
                   textInputAction: TextInputAction.next,
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
-                  ),
+                  keyboardType: TextInputType.emailAddress,
                   validator: FormKitValidatorComposer([
                     FormKitRequiredValidator(
                       constantErrorMessage('Email is required'),
@@ -33,12 +34,12 @@ class LoginForm extends StatelessWidget {
                     ),
                   ]),
                 ),
-                FormKitTextField(
+                FormKitCupertinoTextField.formRow(
                   name: 'password',
-                  textInputAction: TextInputAction.next,
-                  decoration: const InputDecoration(
-                    labelText: 'Password',
-                  ),
+                  placeholder: 'required',
+                  prefix: SizedBox(width: 120, child: Text('Password')),
+                  clearButtonMode: OverlayVisibilityMode.editing,
+                  textInputAction: TextInputAction.send,
                   obscureText: true,
                   validatorInterval: const Duration(milliseconds: 100),
                   validator: FormKitValidatorComposer([
@@ -52,17 +53,14 @@ class LoginForm extends StatelessWidget {
                     ),
                   ]),
                 ),
-                FormKitCheckboxField(
+                FormKitCupertinoSwitchField(
                   name: 'remember',
-                  title: const Text('Remember me'),
-                  horizontalTitleGap: 0,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 0),
+                  prefix: SizedBox(width: 120, child: Text('Remember me')),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
+                CupertinoFormRow(
                   child: FormKitSubmitBuilder(
-                    builder: (_, submit) => ElevatedButton(
-                      child: const Text('Login'),
+                    builder: (context, submit) => CupertinoButton.filled(
+                      child: Text('Login'),
                       onPressed: submit,
                     ),
                   ),
@@ -75,7 +73,7 @@ class LoginForm extends StatelessWidget {
     );
   }
 
-  void _login(Map<String, dynamic?> values, _errors) {
-    print('Login successful: $values');
+  _onSubmit(Map<String, dynamic?> values, _errors) {
+    print('Login with: $values');
   }
 }

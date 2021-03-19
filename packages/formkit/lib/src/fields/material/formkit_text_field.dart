@@ -463,20 +463,20 @@ class FormKitTextField extends StatefulWidget {
 }
 
 class _FormKitTextFieldState extends State<FormKitTextField> {
-  TextEditingController? _fallbackController;
-  TextEditingController get _controller =>
-      widget.controller ?? (_fallbackController ??= TextEditingController());
+  TextEditingController? _controller;
+  TextEditingController get _effectiveController =>
+      widget.controller ?? (_controller ??= TextEditingController());
 
-  bool get _enabled => widget.enabled ?? FormKit.of(context).widget.enabled;
+  bool get _effectiveEnabled => widget.enabled ?? FormKit.of(context).widget.enabled;
 
   void _onSetValue(dynamic? value) {
     if (value == null || !(value is String)) {
-      _controller.text = '';
+      _effectiveController.text = '';
       return;
     }
 
-    _controller.text = value;
-    _controller.selection = TextSelection.collapsed(offset: value.length);
+    _effectiveController.text = value;
+    _effectiveController.selection = TextSelection.collapsed(offset: value.length);
   }
 
   @override
@@ -491,8 +491,8 @@ class _FormKitTextFieldState extends State<FormKitTextField> {
         final decoration = _getDecoration(validationState);
 
         return TextField(
-          controller: _controller,
-          enabled: _enabled,
+          controller: _effectiveController,
+          enabled: _effectiveEnabled,
           decoration: decoration,
           onChanged: (value) {
             onChanged(value);
@@ -518,14 +518,8 @@ class _FormKitTextFieldState extends State<FormKitTextField> {
           obscuringCharacter: widget.obscuringCharacter,
           obscureText: widget.obscureText,
           autocorrect: widget.autocorrect,
-          smartDashesType: widget.smartDashesType ??
-              (widget.obscureText
-                  ? SmartDashesType.disabled
-                  : SmartDashesType.enabled),
-          smartQuotesType: widget.smartQuotesType ??
-              (widget.obscureText
-                  ? SmartQuotesType.disabled
-                  : SmartQuotesType.enabled),
+          smartDashesType: widget.smartDashesType,
+          smartQuotesType: widget.smartQuotesType,
           enableSuggestions: widget.enableSuggestions,
           maxLengthEnforcement: widget.maxLengthEnforcement,
           maxLines: widget.maxLines,

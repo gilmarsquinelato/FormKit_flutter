@@ -50,6 +50,15 @@ This library is not stable yet!
 - - [x] Slider Field
 - - [x] Range Slider Field
 - - [x] Dropdown Field
+- [] Cupertino Fields
+- - [x] Text Field
+- - [x] Switch Field
+- - [x] Date Picker Field
+- - [] Timer Picker Field
+- - [] Picker Field
+- - [] Slider Field
+- - [] Segmented Control Field
+- - [] Sliding Segmented Control Field
 
 ### Form
 

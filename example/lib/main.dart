@@ -1,7 +1,12 @@
+import 'package:example/cupertino_fields.dart';
+import 'package:example/cupertino_login_form.dart';
+import 'package:example/cupertino_login_form_section.dart';
 import 'package:example/material_fields.dart';
 import 'package:example/material_login_form.dart';
 import 'package:example/material_signup_form.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
   runApp(MyApp());
@@ -10,12 +15,17 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return CupertinoApp(
+      title: 'FormKit Example',
       debugShowCheckedModeBanner: false,
-      title: 'FormKit Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: CupertinoThemeData(brightness: Brightness.light),
+      localizationsDelegates: <LocalizationsDelegate<dynamic>>[
+        DefaultMaterialLocalizations.delegate,
+        DefaultWidgetsLocalizations.delegate,
+        DefaultCupertinoLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+      ],
       home: ExamplesCatalog(),
     );
   }
@@ -26,12 +36,15 @@ class ExamplesCatalog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('FormKit Demo'),
+        title: const Text('FormKit Example'),
       ),
       body: ListView(
         children: [
           ListTile(
-            title: const Text('Select one of the examples below'),
+            title: Text(
+              'Material',
+              style: Theme.of(context).textTheme.headline5,
+            ),
           ),
           ListTile(
             title: const Text('Login Form'),
@@ -49,6 +62,30 @@ class ExamplesCatalog extends StatelessWidget {
             title: const Text('All Fields'),
             onTap: () => Navigator.of(context).push(MaterialPageRoute(
               builder: (_) => MaterialFields(),
+            )),
+          ),
+          ListTile(
+            title: Text(
+              'Cupertino',
+              style: Theme.of(context).textTheme.headline5,
+            ),
+          ),
+          ListTile(
+            title: const Text('Login Form'),
+            onTap: () => Navigator.of(context).push(CupertinoPageRoute(
+              builder: (_) => CupertinoLoginForm(),
+            )),
+          ),
+          ListTile(
+            title: const Text('Login Form - Form Section'),
+            onTap: () => Navigator.of(context).push(CupertinoPageRoute(
+              builder: (_) => CupertinoLoginFormSection(),
+            )),
+          ),
+          ListTile(
+            title: const Text('All Fields'),
+            onTap: () => Navigator.of(context).push(CupertinoPageRoute(
+              builder: (_) => CupertinoFields(),
             )),
           ),
         ],
