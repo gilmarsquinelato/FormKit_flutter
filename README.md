@@ -50,7 +50,7 @@ This library is not stable yet!
 - - [x] Slider Field
 - - [x] Range Slider Field
 - - [x] Dropdown Field
-- [] Cupertino Fields
+- [ ] Cupertino Fields
 - - [x] Text Field
 - - [x] Switch Field
 - - [x] Date Picker Field
